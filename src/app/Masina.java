@@ -18,6 +18,9 @@ public class Masina {
         text+="Model "+model+"\n";
         text+="Kilometraj "+kilometraj+"km"+"\n";
         text+="Pret: $" +pret+"\n";
+        text+="An fabricatie: " +anFabricatie +"\n";
+        text+="Mod Transmisie: " +modTransmisie+"\n";
+
 
         return  text;
 
