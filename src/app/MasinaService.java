@@ -432,5 +432,207 @@ public class MasinaService {
         System.out.println(masinaVeche);
     }
 
+    //19. Masina cu cei mai multi km
+    void afiseazaMasinaCuCeiMaiMultiKm(){
+
+        int kilometraj = 0;
+        String masina = "";
+
+        NumberFormat nf = NumberFormat.getInstance(new Locale("ro", "RO"));
+
+        for(int i=0; i<masini.size();i++){
+            if(kilometraj < masini.get(i).kilometraj){
+                kilometraj = masini.get(i).kilometraj;
+                masina = "Masina cu cei mai multi km: " + masini.get(i).marca + masini.get(i).model + " (" + nf.format(kilometraj) + ")";
+            }
+        }
+
+
+        System.out.println((masina));
+    }
+
+
+    //20. Pretul maxim;
+    int pretMaxim(){
+
+        int pretMaxim = 0;
+        for(int i=0; i<masini.size();i++){
+            if(pretMaxim < masini.get(i).pret){
+                pretMaxim = masini.get(i).pret;
+            }
+        }
+
+        System.out.println("Pretul maxim este: $" +pretMaxim);
+        return pretMaxim;
+    }
+
+
+    //NIVEL 5
+    //21. Afiseaza masinile unei marci;
+
+    void afiseazaMasiniMarca(String marca){
+
+        ArrayList<String> cars = new ArrayList<>();
+
+        for(int i=0;i<masini.size();i++){
+            if(marca.equalsIgnoreCase(masini.get(i).marca)){
+
+                String masina = masini.get(i).marca + " " + masini.get(i).model;
+                cars.add(masina);
+            }
+
+        }
+        System.out.println(marca + " -> " +cars);
+    }
+
+    //22. Afiseaza masini automate;
+    void afiseazaMasiniAutomate(){
+        ArrayList<String> automate = new ArrayList<>();
+
+        for(int i=0; i<masini.size();i++){
+            if(masini.get(i).modTransmisie == "Automata"){
+
+                String masinaAutomata = masini.get(i).marca + " " + masini.get(i).model;
+                automate.add(masinaAutomata);
+            }
+        }
+        System.out.println("Masini automate: " + automate);
+    }
+
+    //23. Afiseaza masinile dintr-un interval de pret;
+    void afiseazaMasinileIntrePreturi(int min, int max){
+
+        ArrayList<String> cars = new ArrayList<>();
+
+        for(int i=0; i<masini.size();i++){
+            if(masini.get(i).pret > min && masini.get(i).pret < max){
+
+                String masina = masini.get(i).marca + " " + masini.get(i).model;
+                cars.add(masina);
+            }
+        }
+
+        System.out.println("Masini cuprinse in intervalul: $" +min +" - " +max + " " + cars);
+
+    }
+
+    //24. Cauta prima masina de o marca;
+    void cautaPrimaMasinaMarca(String marca){
+
+        int ctMasina = 0;
+
+        for(int i=0; i<masini.size();i++){
+            if(masini.get(i).marca.equalsIgnoreCase(marca)){
+                System.out.println(marca + " " +masini.get(i).model);
+                ctMasina++;
+               return;
+            }
+        }
+        if(ctMasina == 0){
+            System.out.println("Masina " +marca + " nu a fost gasita");
+        }
+    }
+
+    //25. Exista o masina de o marca;
+    boolean existaMasinaMarca(String marca){
+
+        int ct = 0;
+
+        for(int i=0;i<masini.size();i++){
+            if(masini.get(i).marca.equalsIgnoreCase(marca)){
+                System.out.println(masini.get(i).marca);
+                ct++;
+                break;
+
+            }
+        }
+        if(ct == 0){
+            System.out.println("Masina nu a fost gasita");
+            return false;
+        } else{
+            return true;
+        }
+    }
+
+    //NIVEL 6.
+    //26. Masini noi si ieftine
+    int numarMasiniNoisiIeftine(int anMin, int pretMax) {
+
+        int ct = 0;
+        for (int i = 0; i < masini.size(); i++) {
+            if (masini.get(i).anFabricatie >= anMin && masini.get(i).pret < pretMax) {
+                ct++;
+            }
+        }
+
+        if (ct != 0) {
+            System.out.println("Pentru " + anMin + " si $" + pretMax +" -> " +ct);
+            return ct;
+
+        } return 0;
+    }
+
+    //27. Pretul mediu pentru o marca;
+
+    double mediePreturiMarca(String marca){
+
+        int ct=0;
+        int totalPret =0;
+
+        for(int i=0;i<masini.size();i++){
+            if(masini.get(i).marca.equalsIgnoreCase(marca)){
+                totalPret+=masini.get(i).pret;
+                ct++;
+            }
+        }
+
+        double mediePreturi = (double) totalPret / (double) ct;
+        System.out.println("Media preturilor pentru: " +marca +": $" + mediePreturi);
+        return mediePreturi;
+    }
+
+    //28. Creste Kilometrajul tuturor masinilor;
+
+    void cresteKilometrajul(int km){
+
+        for(int i=0;i<masini.size();i++){
+            masini.get(i).kilometraj += km;
+        }
+
+        afisareMasini();
+    }
+
+    //29. Aplica o reducere tuturor masinilor;
+    void aplicaReducere(int procentReducere){
+
+        int pretRedus = (100 - procentReducere) / 100;
+
+        for(int i=0;i<masini.size();i++){
+            masini.get(i).pret*= pretRedus;
+        }
+
+        afisareMasini();
+    }
+
+
+    //30. Afiseaza masinile ordonate dupa pret;
+    void afiseazaMasiniOrdonateDupaPret(){
+
+        for(int i= 0;i<masini.size();i++){
+            for(int j=i+1;j<masini.size();j++){
+                if(masini.get(j).pret < masini.get(i).pret){
+
+                   Masina aux= masini.get(i);
+                    masini.set(i, masini.get(j));
+                    masini.set(j, aux);
+
+                }
+            }
+            System.out.println(masini.get(i).marca + " " + masini.get(i).model + ": $" + masini.get(i).pret);
+        }
+
+
+
+    }
 
 }
