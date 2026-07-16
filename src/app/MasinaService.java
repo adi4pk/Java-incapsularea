@@ -259,7 +259,7 @@ public class MasinaService {
         int nrAutomate = 0;
 
         for(int i=0;i<masini.size();i++){
-            if(masini.get(i).modTransmisie == "Automata"){
+            if(masini.get(i).modTransmisie.equals("Automata")){     // Regula: la String mereu .equals(). | NU String == String
                 nrAutomate++;
             }
         }
@@ -605,10 +605,12 @@ public class MasinaService {
     //29. Aplica o reducere tuturor masinilor;
     void aplicaReducere(int procentReducere){
 
-        int pretRedus = (100 - procentReducere) / 100;
+        // int pretRedus = (100 - procentReducere) / 100; //
+        //  100 lei 10%red =>    10%din 100 = 10 pretul este 90
 
         for(int i=0;i<masini.size();i++){
-            masini.get(i).pret*= pretRedus;
+            int pret= masini.get(i).pret -procentReducere/100 * masini.get(i).pret;
+            masini.get(i).pret=pret;
         }
 
         afisareMasini();

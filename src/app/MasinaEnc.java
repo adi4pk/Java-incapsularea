@@ -1,7 +1,5 @@
 package app;
 
-import java.sql.SQLOutput;
-
 public class MasinaEnc {
     //atribute
     private String marca;
@@ -11,18 +9,25 @@ public class MasinaEnc {
     private int anFabricatie;
     private String modTransmisie;
 
+    static int nrInstante = 0;
 
     //metode
 
     public MasinaEnc(){
 
         this.descriere();
+        nrInstante++;
+
     }
 
     public MasinaEnc(String marca, String model, int kilometraj, int pret, int anFabricatie, String modTransmisie){
         this.marca = marca;
         this.model = model;
 
+        setKilometraj(kilometraj);
+        setPret(pret);
+        setAnFabricatie(anFabricatie);
+        setModTransmisie(modTransmisie);
 
 
     }
@@ -43,31 +48,25 @@ public class MasinaEnc {
     }
 
     public String getMarca(){
-        System.out.println(this.marca);
-        return this.marca;
+        return marca;
     }
 
     public String getModel(){
-        System.out.println(this.model);
-        return this.model;
+        return model;
     }
 
     public int getKm(){
-        System.out.println(this.kilometraj);
-        return this.kilometraj;
+        return kilometraj;
     }
 
     public int getPret(){
-        if (pret > 0) {
-            System.out.println(this.pret);
-            return this.pret;
-        } else return 0;
+            return pret;
     }
 
     public void setPret(int pret){
         if (pret > 0) {
             this.pret = pret;
-            System.out.println(this.pret);
+            System.out.println(pret);
         } else System.out.println("Pretul nu poate fi mai mai mic decat 0.");
     }
 
@@ -78,8 +77,8 @@ public class MasinaEnc {
     }
 
     public void setAnFabricatie(int an){
-        if(anFabricatie >=1950 && anFabricatie<=2025){
-            this.anFabricatie = anFabricatie;
+        if(an >=1950 && an<=2025){
+            this.anFabricatie = an;
             System.out.println("Anul fabricatiei este: " +anFabricatie);
         } else System.out.println("Anul fabricatiei nu poate fi mai vechi de 1950 sau mai nou de 2025.");
 
@@ -94,5 +93,6 @@ public class MasinaEnc {
             // CONSTRUCTORUL NU POATE RETURNA O VALOARE
         }
     }
+
 }
 

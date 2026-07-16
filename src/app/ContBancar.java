@@ -8,7 +8,16 @@ public class ContBancar {
 
     private String titular;
     private double sold;
+    private boolean isActive;
+    private static List<String> istoric = new ArrayList<>();
 
+    void blocheaza(){
+        this.isActive = false;
+    }
+
+    void deblocheaza(){
+        this.isActive = true;
+    }
 
 //    List<String> titulari = Arrays.asList("popescu", "ionescu", "pancu");
 
@@ -20,7 +29,6 @@ public class ContBancar {
 
         if(titular !=null && titular !=""){
             this.titular = titular;
-            sold = 0;
         }
 
     }
@@ -39,6 +47,8 @@ public class ContBancar {
 //            System.out.println(titular);
         }
 
+        isActive = true;
+
         System.out.println(this.descriere());       //printeaza ce returneaza functia descriere();
 
 
@@ -47,16 +57,25 @@ public class ContBancar {
     public ContBancar(String titular, double soldInitial){
 
         if(titular != null){
+            this.titular = titular;
             this.sold = soldInitial;
         }
+
+        isActive = true;
+
     }
 
-    public void getSold(String titular){
+    public double getSold(String titular){
 
-        if(titular !=null && titular !=""){
+            //todo
+        // GETTER trebuie sa returneze MEREU ceva; // RETURN
+
+        if(!titular.isEmpty()  && !"".equals(titular)){ // ← != pe String compară referințe, nu conținut
             System.out.println("Soldul tau curent este: " +sold + "LEI");
+            return sold;
         } else{
             System.out.println("Titularul nu exista");
+            return 0;
         }
 
     }
@@ -65,9 +84,16 @@ public class ContBancar {
     //DEPUNERE
     public void depune(double suma){
 
+        if(!isActive){
+            System.out.println("Contul este blocat.");
+            return;
+        }
         if(suma > 0){
             this.sold += suma;
             System.out.println("Ai depus: " + suma);
+
+            String depunere = "Depunere: +" + suma;
+            istoric.add(depunere);
         } else{
             System.out.println("Suma depusa trebuie sa fie pozitiva.");
         }
@@ -76,9 +102,15 @@ public class ContBancar {
 
     //RETRAGERE
     public void retrage(double suma){
-        if(suma >0 && suma < sold){
+        if(!isActive){
+            System.out.println("Contul este blocat.");
+            return;
+        }
+        if(suma >0 && suma <= sold){
             this.sold -= suma;
             System.out.println("Ai retras suma de: " +suma);
+            String retragere = "Retragere: -" + suma;
+            istoric.add(retragere);
 
         } else{
             System.out.println("Fonduri insuficiente sau suma invalida");
@@ -101,5 +133,19 @@ public class ContBancar {
         return text;
     }
 
+    public List<String> extras(){
 
+        List<String> copieIstoric = new ArrayList(istoric);
+        System.out.println(copieIstoric);
+        return copieIstoric;
+    }
+
+
+
+
+
+    //todo -- != ==  vs EQUALS
+    // primitivele: int, double, bool - != sau ==
+    // Obiecte (String, clase etc.) folosim - equals(); sau !"".equals(String ) sau !String.isEmpty();
+    // daca folosim == la String sau alte Obiecte -> la string, sistemul va compara doar prima litera
 }
