@@ -1,5 +1,4 @@
-package app;
-import java.io.StringReader;
+package app.catalog;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,7 +14,8 @@ public class Catalog {
     void adauga(String produs){
 
 
-        if(produs.equals("") || produs == null){
+        //todo verificarea de NULL e mereu prima.
+        if(produs == null || produs.equals("")){
 
             System.out.println("Produsul nu poate fi NULL sau empty string");
             return;
@@ -39,7 +39,7 @@ public class Catalog {
     public boolean contine(String produs){
 
         if (produse.contains(produs)){
-            return true;
+            return produse.contains(produs);    //returns true;
         } else return false;
     }
 

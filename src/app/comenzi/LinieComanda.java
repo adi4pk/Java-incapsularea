@@ -1,4 +1,4 @@
-package app;
+package app.comenzi;
 
 public class LinieComanda {
 

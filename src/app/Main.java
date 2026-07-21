@@ -1,9 +1,12 @@
 package app;
 
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import app.Banca.ContBancar;
+import app.catalog.Catalog;
+import app.comenzi.Comanda;
+import app.comenzi.Produs;
+import app.masini.Masina;
+import app.masini.MasinaEnc;
 
 public class Main {
     public static void main(String[] args) {
@@ -38,7 +41,7 @@ public class Main {
         Persoana pers3 = new Persoana("Adi", 30, "Craiova", "masculin");
     }
 
-    public static  ContBancar ex4(){
+    public static ContBancar ex4(){
 
 
 
@@ -111,7 +114,7 @@ public class Main {
         new MasinaEnc();
         new MasinaEnc();
 
-        System.out.println(MasinaEnc.nrInstante);
+        System.out.println(MasinaEnc.getNrInstante());
 
 
     }

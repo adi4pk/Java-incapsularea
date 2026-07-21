@@ -1,6 +1,6 @@
-package app;
-
-public class MasinaEnc {
+package app.masini;
+//todo:o clasa este formata din atribute si metode
+public class Masina {
     //atribute
     private String marca;
     private String model;
@@ -9,26 +9,32 @@ public class MasinaEnc {
     private int anFabricatie;
     private String modTransmisie;
 
-    static int nrInstante = 0;
+    //todo must add a getter for nrInstante;
+    private static int nrInstante = 0;
 
     //metode
 
-    public MasinaEnc(){
+    public Masina(){
 
         this.descriere();
         nrInstante++;
 
     }
 
-    public MasinaEnc(String marca, String model, int kilometraj, int pret, int anFabricatie, String modTransmisie){
+    //todo daca un camp numara instantele, fiecare Constructor() trebuie sa-l incrementeze.
+
+
+    public Masina(String marca, String model, int kilometraj, int pret, int anFabricatie, String modTransmisie){
         this.marca = marca;
         this.model = model;
+
 
         setKilometraj(kilometraj);
         setPret(pret);
         setAnFabricatie(anFabricatie);
         setModTransmisie(modTransmisie);
 
+        nrInstante++;
 
     }
 
@@ -60,7 +66,15 @@ public class MasinaEnc {
     }
 
     public int getPret(){
-            return pret;
+        return pret;
+    }
+
+    public int getAnFabricatie(){
+        return anFabricatie;
+    }
+
+    public String getModTransmisie(){
+        return modTransmisie;
     }
 
     public void setPret(int pret){
@@ -94,5 +108,8 @@ public class MasinaEnc {
         }
     }
 
-}
+    public static int getNrInstante(){
+        return nrInstante;
+    }
 
+}

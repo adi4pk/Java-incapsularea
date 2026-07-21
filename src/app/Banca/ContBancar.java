@@ -1,7 +1,6 @@
-package app;
+package app.Banca;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class ContBancar {
@@ -9,9 +8,12 @@ public class ContBancar {
     private String titular;
     private double sold;
     private boolean isActive;
-    private static List<String> istoric = new ArrayList<>();
 
-    void blocheaza(){
+    //todo NOT static - fiecare cont are propriul istoric, unic
+    // nu impartim acelasi istoric la toate conturile.
+    private List<String> istoric = new ArrayList<>();
+
+    public void blocheaza(){
         this.isActive = false;
     }
 
@@ -27,7 +29,7 @@ public class ContBancar {
 
     public void setTitular(String titular){
 
-        if(titular !=null && titular !=""){
+        if(!titular.isEmpty()){
             this.titular = titular;
         }
 

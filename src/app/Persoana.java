@@ -89,7 +89,7 @@ public class Persoana {
         }
     }
 
-    private String descriere(){
+    public String descriere(){
 
         String text = "";
         text+= "Nume " + nume +'\n';

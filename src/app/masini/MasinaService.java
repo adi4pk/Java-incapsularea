@@ -1,4 +1,4 @@
-package app;
+package app.masini;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -9,199 +9,48 @@ import java.text.NumberFormat;
 
 
 public class MasinaService {
-    public List<Masina> masini;
+    private List<Masina> masini;
+
+    //todo create constructor and add func loadMasini()
+    public MasinaService(){
+
+        loadMasini();
+    }
 
     void  loadMasini(){
 
 
         masini = new ArrayList<>();
-        Masina a = new Masina();//am creat un obiect de tip masina
-
-        a.anFabricatie=1993;
-        a.kilometraj=12;
-        a.marca = "Audi";
-        a.model = "A4";
-        a.pret = 18000;
-        a.modTransmisie = "Manuala";
 
 
-
-        Masina b = new Masina();
-
-        b.kilometraj=13;
-        b.anFabricatie=2010;
-        b.marca = "BMW";
-        b.model = "X5";
-        b.pret = 15000;
-        b.modTransmisie = "Automata";
-
-        Masina c = new Masina();
-        c.kilometraj = 45000;
-        c.anFabricatie = 2019;
-
-        c.marca = "Toyota";
-        c.model = "Corolla";
-        c.pret = 16000;
-        c.modTransmisie = "Manuala";
-
-        Masina d = new Masina();
-        d.kilometraj = 54000;
-        d.anFabricatie = 2015;
-
-        d.marca = "Mercedes";
-        d.model = "C-Class";
-        d.pret = 20000;
-        d.modTransmisie = "Automata";
+        Masina a = new Masina(
+                "Audi",
+                "A4",
+                12,
+                18000,
+                1993,
+                "Manuala"
+        );
 
 
+        Masina b = new Masina("BMW", "X5", 13, 15000, 2010, "Automata");
+        Masina c = new Masina("Toyota", "Corolla", 45000, 16000, 2019, "Manuala");
+        Masina d = new Masina("Mercedes", "C-Class", 54000, 20000, 2015, "Automata");
+        Masina e = new Masina("Volkswagen", "Golf", 120000, 9000, 2012, "Manuala");
+        Masina f = new Masina("Ford", "Focus", 75000, 14000, 2018, "Manuala");
+        Masina g = new Masina("BMW", "X3", 30000, 28000, 2020, "Automata");
+        Masina h = new Masina("Audi", "A6", 98000, 17000, 2014, "Automata");
+        Masina i = new Masina("Skoda", "Octavia", 67000, 15500, 2017, "Manuala");
+        Masina j = new Masina("Seat", "Leon", 88000, 11000, 2013, "Manuala");
+        Masina k = new Masina("Hyundai", "Tucson", 25000, 27000, 2021, "Automata");
+        Masina l = new Masina("Opel", "Astra", 134000, 8000, 2011, "Manuala");
+        Masina m = new Masina("Mazda", "CX-5", 92000, 18000, 2016, "Automata");
+        Masina n = new Masina("Kia", "Sportage", 41000, 19500, 2019, "Manuala");
+        Masina o = new Masina("Tesla", "Model 3", 15000, 35000, 2022, "Automata");
+        Masina p = new Masina("Renault", "Megane", 76000, 13000, 2015, "Manuala");
+        Masina q = new Masina("Peugeot", "308", 99000, 10500, 2014, "Manuala");
+        Masina r = new Masina("Volvo", "XC60", 32000, 33000, 2020, "Automata");
 
-        Masina e = new Masina();
-        e.kilometraj = 120000;
-        e.anFabricatie = 2012;
-
-        e.marca = "Volkswagen";
-        e.model = "Golf";
-        e.pret = 9000;
-        e.modTransmisie = "Manuala";
-
-
-        Masina f = new Masina();
-        f.kilometraj = 75000;
-        f.anFabricatie = 2018;
-
-        f.marca = "Ford";
-        f.model = "Focus";
-        f.pret = 14000;
-        f.modTransmisie = "Manuala";
-
-
-        Masina g = new Masina();
-        g.kilometraj = 30000;
-        g.anFabricatie = 2020;
-
-        g.marca = "BMW";
-        g.model = "X3";
-        g.pret = 28000;
-        g.modTransmisie = "Automata";
-
-
-        Masina h = new Masina();
-        h.kilometraj = 98000;
-        h.anFabricatie = 2014;
-
-        h.marca = "Audi";
-        h.model = "A6";
-        h.pret = 17000;
-        h.modTransmisie = "Automata";
-
-        Masina i = new Masina();
-
-        i.kilometraj = 67000;
-        i.anFabricatie = 2017;
-
-        i.marca = "Skoda";
-        i.model = "Octavia";
-        i.pret = 15500;
-        i.modTransmisie = "Manuala";
-
-
-        Masina j = new Masina();
-
-        j.kilometraj = 88000;
-        j.anFabricatie = 2013;
-
-        j.marca = "Seat";
-        j.model = "Leon";
-        j.pret = 11000;
-        j.modTransmisie = "Manuala";
-
-
-        Masina k = new Masina();
-
-        k.kilometraj = 25000;
-        k.anFabricatie = 2021;
-
-        k.marca = "Hyundai";
-        k.model = "Tucson";
-        k.pret = 27000;
-        k.modTransmisie = "Automata";
-
-
-        Masina l = new Masina();
-
-        l.kilometraj = 134000;
-        l.anFabricatie = 2011;
-
-        l.marca = "Opel";
-        l.model = "Astra";
-        l.pret = 8000;
-        l.modTransmisie = "Manuala";
-
-
-        Masina m = new Masina();
-
-        m.kilometraj = 92000;
-        m.anFabricatie = 2016;
-
-        m.marca = "Mazda";
-        m.model = "CX-5";
-        m.pret = 18000;
-        m.modTransmisie = "Automata";
-
-
-        Masina n = new Masina();
-
-        n.kilometraj = 41000;
-        n.anFabricatie = 2019;
-
-        n.marca = "Kia";
-        n.model = "Sportage";
-        n.pret = 19500;
-        n.modTransmisie = "Manuala";
-
-
-        Masina o = new Masina();
-
-        o.kilometraj = 15000;
-        o.anFabricatie = 2022;
-
-        o.marca = "Tesla";
-        o.model = "Model 3";
-        o.pret = 35000;
-        o.modTransmisie = "Automata";
-
-
-        Masina p = new Masina();
-
-        p.kilometraj = 76000;
-        p.anFabricatie = 2015;
-
-        p.marca = "Renault";
-        p.model = "Megane";
-        p.pret = 13000;
-        p.modTransmisie = "Manuala";
-
-
-        Masina q = new Masina();
-
-        q.kilometraj = 99000;
-        q.anFabricatie = 2014;
-
-        q.marca = "Peugeot";
-        q.model = "308";
-        q.pret = 10500;
-        q.modTransmisie = "Manuala";
-
-
-        Masina r = new Masina();
-
-        r.kilometraj = 32000;
-        r.anFabricatie = 2020;
-
-        r.marca = "Volvo";
-        r.model = "XC60";
-        r.pret = 33000;
-        r.modTransmisie = "Automata";
 
 
         masini.add(a);
@@ -226,13 +75,13 @@ public class MasinaService {
 
     void afiseazaMarci(){
         for(int i=0; i<masini.size();i++){
-            System.out.println(masini.get(i).marca);
+            System.out.println(masini.get(i).getMarca());
         }
     }
 
     void afiseazaMarcaModel(){
         for(int i=0; i<masini.size();i++){
-            System.out.println(masini.get(i).marca + masini.get(i).model);
+            System.out.println(masini.get(i).getMarca() + masini.get(i).getModel());
         }
     }
 
@@ -241,7 +90,7 @@ public class MasinaService {
         char nume = 'a';
         for(int i=0; i<masini.size();i++){
 
-            System.out.println("Pret masina " + nume + " $"+masini.get(i).pret);
+            System.out.println("Pret masina " + nume + " $"+masini.get(i).getPret());
 
             nume++;
         }
@@ -259,7 +108,7 @@ public class MasinaService {
         int nrAutomate = 0;
 
         for(int i=0;i<masini.size();i++){
-            if(masini.get(i).modTransmisie.equals("Automata")){     // Regula: la String mereu .equals(). | NU String == String
+            if(masini.get(i).getModTransmisie().equals("Automata")){     // Regula: la String mereu .equals(). | NU String == String
                 nrAutomate++;
             }
         }
@@ -270,9 +119,9 @@ public class MasinaService {
 
     int numarMasiniManuale(){
         int nrManuale = 0;
-
+String txt= "Manuala";
         for(int i=0;i<masini.size();i++){
-            if(masini.get(i).modTransmisie == "Manuala"){
+            if(masini.get(i).equals(txt)){
                 nrManuale++;
             }
         }
@@ -290,7 +139,7 @@ public class MasinaService {
 
 
         for (int i = 0; i < masini.size(); i++) {
-            if (marca.equalsIgnoreCase(masini.get(i).marca)) {
+            if (marca.equalsIgnoreCase(masini.get(i).getMarca())) {
                 ctMarca++;
             }
         }
@@ -310,7 +159,7 @@ public class MasinaService {
         int ct=0;
 
         for (int i=0; i<masini.size(); i++){
-            if(masini.get(i).pret > prag){
+            if(masini.get(i).getPret() > prag){
                 ct++;
             }
         }
@@ -326,7 +175,7 @@ public class MasinaService {
         int ct=0;
 
         for(int i=0; i<masini.size(); i++){
-            if(masini.get(i).kilometraj < prag){
+            if(masini.get(i).getKm() < prag){
                 ct++;
             }
         }
@@ -344,7 +193,7 @@ public class MasinaService {
 
         for(int i=0; i<masini.size(); i++){
 
-            totalPreturi+=masini.get(i).pret;
+            totalPreturi+=masini.get(i).getPret();
         }
 
         double mediePret = (double) totalPreturi / (double) masini.size();
@@ -361,7 +210,7 @@ public class MasinaService {
         int kilometraj = 0;
 
         for(int i=0; i<masini.size();i++){
-            kilometraj+=masini.get(i).kilometraj;
+            kilometraj+=masini.get(i).getKm();
         }
 
         NumberFormat nf = NumberFormat.getInstance(new Locale("ro", "RO"));
@@ -377,9 +226,9 @@ public class MasinaService {
         String ceaMaiScumpa = "";
 
         for(int i=0; i< masini.size(); i++){
-            if(pret < masini.get(i).pret){
-                pret = masini.get(i).pret;
-                ceaMaiScumpa = masini.get(i).marca + " " + masini.get(i).model;
+            if(pret < masini.get(i).getPret()){
+                pret = masini.get(i).getPret();
+                ceaMaiScumpa = masini.get(i).getMarca() + " " + masini.get(i).getModel();
             }
         }
         System.out.println("Cea mai scumpa masina: " + ceaMaiScumpa + ": $" + pret);
@@ -392,9 +241,9 @@ public class MasinaService {
         String ceaMaiIeftina = "";
 
         for(int i=0;i<masini.size();i++){
-            if(masini.get(i).pret < pretMin){
-                pretMin = masini.get(i).pret;
-                ceaMaiIeftina = masini.get(i).marca + " " + masini.get(i).model;
+            if(masini.get(i).getPret() < pretMin){
+                pretMin = masini.get(i).getPret();
+                ceaMaiIeftina = masini.get(i).getMarca() + " " + masini.get(i).getModel();
             }
         }
         System.out.println("Cea mai ieftina masina: " + ceaMaiIeftina + ": $" + pretMin); //prints the last result of masini.get(i).marca
@@ -408,9 +257,9 @@ public class MasinaService {
         String masinaNoua = "";
 
         for(int i=0; i<masini.size();i++){
-            if(anFabricatie < masini.get(i).anFabricatie){
-                anFabricatie = masini.get(i).anFabricatie;
-                masinaNoua = "Cea mai noua masina: " + masini.get(i).marca + masini.get(i).model + " (" + anFabricatie +")";
+            if(anFabricatie < masini.get(i).getAnFabricatie()){
+                anFabricatie = masini.get(i).getAnFabricatie();
+                masinaNoua = "Cea mai noua masina: " + masini.get(i).getMarca() + " " + masini.get(i).getModel() + " (" + anFabricatie +")";
             }
 
         }
@@ -424,9 +273,9 @@ public class MasinaService {
         String masinaVeche = "";
 
         for(int i=0; i<masini.size();i++){
-            if(masini.get(i).anFabricatie < anFabricatie){
-                anFabricatie = masini.get(i).anFabricatie;
-                masinaVeche = "Cea mai veche masina: " + masini.get(i).marca + masini.get(i).model + " (" + anFabricatie +")";
+            if(masini.get(i).getAnFabricatie() < anFabricatie){
+                anFabricatie = masini.get(i).getAnFabricatie();
+                masinaVeche = "Cea mai veche masina: " + masini.get(i).getMarca() + " " + masini.get(i).getModel() + " (" + anFabricatie +")";
             }
         }
         System.out.println(masinaVeche);
@@ -441,9 +290,9 @@ public class MasinaService {
         NumberFormat nf = NumberFormat.getInstance(new Locale("ro", "RO"));
 
         for(int i=0; i<masini.size();i++){
-            if(kilometraj < masini.get(i).kilometraj){
-                kilometraj = masini.get(i).kilometraj;
-                masina = "Masina cu cei mai multi km: " + masini.get(i).marca + masini.get(i).model + " (" + nf.format(kilometraj) + ")";
+            if(kilometraj < masini.get(i).getKm()){
+                kilometraj = masini.get(i).getKm();
+                masina = "Masina cu cei mai multi km: " + masini.get(i).getMarca() + " " + masini.get(i).getModel() + " (" + nf.format(kilometraj) + ")";
             }
         }
 
@@ -457,8 +306,8 @@ public class MasinaService {
 
         int pretMaxim = 0;
         for(int i=0; i<masini.size();i++){
-            if(pretMaxim < masini.get(i).pret){
-                pretMaxim = masini.get(i).pret;
+            if(pretMaxim < masini.get(i).getPret()){
+                pretMaxim = masini.get(i).getPret();
             }
         }
 
@@ -475,9 +324,9 @@ public class MasinaService {
         ArrayList<String> cars = new ArrayList<>();
 
         for(int i=0;i<masini.size();i++){
-            if(marca.equalsIgnoreCase(masini.get(i).marca)){
+            if(marca.equalsIgnoreCase(masini.get(i).getMarca())){
 
-                String masina = masini.get(i).marca + " " + masini.get(i).model;
+                String masina = masini.get(i).getMarca() + " " + masini.get(i).getModel();
                 cars.add(masina);
             }
 
@@ -490,9 +339,9 @@ public class MasinaService {
         ArrayList<String> automate = new ArrayList<>();
 
         for(int i=0; i<masini.size();i++){
-            if(masini.get(i).modTransmisie == "Automata"){
+            if(masini.get(i).getModTransmisie().equals("Automata")){
 
-                String masinaAutomata = masini.get(i).marca + " " + masini.get(i).model;
+                String masinaAutomata = masini.get(i).getMarca() + " " + masini.get(i).getModel();
                 automate.add(masinaAutomata);
             }
         }
@@ -505,9 +354,9 @@ public class MasinaService {
         ArrayList<String> cars = new ArrayList<>();
 
         for(int i=0; i<masini.size();i++){
-            if(masini.get(i).pret > min && masini.get(i).pret < max){
+            if(masini.get(i).getPret() > min && masini.get(i).getPret() < max){
 
-                String masina = masini.get(i).marca + " " + masini.get(i).model;
+                String masina = masini.get(i).getMarca() + " " + masini.get(i).getModel();
                 cars.add(masina);
             }
         }
@@ -522,8 +371,8 @@ public class MasinaService {
         int ctMasina = 0;
 
         for(int i=0; i<masini.size();i++){
-            if(masini.get(i).marca.equalsIgnoreCase(marca)){
-                System.out.println(marca + " " +masini.get(i).model);
+            if(masini.get(i).getMarca().equalsIgnoreCase(marca)){
+                System.out.println(marca + " " +masini.get(i).getModel());
                 ctMasina++;
                return;
             }
@@ -539,8 +388,8 @@ public class MasinaService {
         int ct = 0;
 
         for(int i=0;i<masini.size();i++){
-            if(masini.get(i).marca.equalsIgnoreCase(marca)){
-                System.out.println(masini.get(i).marca);
+            if(masini.get(i).getMarca().equalsIgnoreCase(marca)){
+                System.out.println(masini.get(i).getMarca());
                 ct++;
                 break;
 
@@ -560,7 +409,7 @@ public class MasinaService {
 
         int ct = 0;
         for (int i = 0; i < masini.size(); i++) {
-            if (masini.get(i).anFabricatie >= anMin && masini.get(i).pret < pretMax) {
+            if (masini.get(i).getAnFabricatie() >= anMin && masini.get(i).getPret() < pretMax) {
                 ct++;
             }
         }
@@ -580,8 +429,8 @@ public class MasinaService {
         int totalPret =0;
 
         for(int i=0;i<masini.size();i++){
-            if(masini.get(i).marca.equalsIgnoreCase(marca)){
-                totalPret+=masini.get(i).pret;
+            if(!masini.get(i).getMarca().isEmpty() && masini.get(i).getMarca().equalsIgnoreCase(marca)){
+                totalPret+=masini.get(i).getPret();
                 ct++;
             }
         }
@@ -596,7 +445,10 @@ public class MasinaService {
     void cresteKilometrajul(int km){
 
         for(int i=0;i<masini.size();i++){
-            masini.get(i).kilometraj += km;
+
+            int numKm = masini.get(i).getKm();
+            numKm += km;
+            masini.get(i).setKilometraj(numKm);
         }
 
         afisareMasini();
@@ -608,9 +460,11 @@ public class MasinaService {
         // int pretRedus = (100 - procentReducere) / 100; //
         //  100 lei 10%red =>    10%din 100 = 10 pretul este 90
 
+        //todo / și * au aceeași prioritate
+        // se evaluează stânga → dreapta, deci întâi se calculează procentReducere/100
+
         for(int i=0;i<masini.size();i++){
-            int pret= masini.get(i).pret -procentReducere/100 * masini.get(i).pret;
-            masini.get(i).pret=pret;
+            double pret= (double) masini.get(i).getPret() - ((double)(procentReducere/100) * (double) masini.get(i).getPret());
         }
 
         afisareMasini();
@@ -620,17 +474,24 @@ public class MasinaService {
     //30. Afiseaza masinile ordonate dupa pret;
     void afiseazaMasiniOrdonateDupaPret(){
 
-        for(int i= 0;i<masini.size();i++){
-            for(int j=i+1;j<masini.size();j++){
-                if(masini.get(j).pret < masini.get(i).pret){
+        //todo creeaza o copie a listei originale peste care rulezi functia/for-loops
+        // -> apoi afisezi masinile ordonate din listaCopie.
+        // lista originala ramane neschimbata;
 
-                   Masina aux= masini.get(i);
-                    masini.set(i, masini.get(j));
-                    masini.set(j, aux);
+        ArrayList<Masina> copieMasini = new ArrayList<>(masini);
+
+
+        for(int i= 0;i<copieMasini.size();i++){
+            for(int j=i+1;j<copieMasini.size();j++){
+                if(copieMasini.get(j).getPret() < copieMasini.get(i).getPret()){
+
+                   Masina aux= copieMasini.get(i);
+                    copieMasini.set(i, copieMasini.get(j));
+                    copieMasini.set(j, aux);
 
                 }
             }
-            System.out.println(masini.get(i).marca + " " + masini.get(i).model + ": $" + masini.get(i).pret);
+            System.out.println(copieMasini.get(i).getMarca() + " " + copieMasini.get(i).getModel() + ": $" + copieMasini.get(i).getPret());
         }
 
 

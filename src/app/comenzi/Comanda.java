@@ -1,4 +1,4 @@
-package app;
+package app.comenzi;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,7 +12,7 @@ public class Comanda {
     private List<LinieComanda> listaLinii = new ArrayList<>();
 
     public Comanda(String client){
-        if(!client.equals("")){
+        if(!client.isEmpty()){
             this.client = client;
         }
 
@@ -21,7 +21,7 @@ public class Comanda {
     public void adaugaLinie(Produs produs, int cantitate){
 
         if(cantitate >=1) {
-            LinieComanda lineItem = new LinieComanda(produs, 3);
+            LinieComanda lineItem = new LinieComanda(produs, cantitate);
             listaLinii.add(lineItem);
         }
 
