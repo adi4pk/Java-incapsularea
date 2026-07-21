@@ -1,4 +1,4 @@
-package app.Banca;
+package app.simple.Banca;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,11 +17,17 @@ public class ContBancar {
     //todo method public sau private -
     //daca nu este public nu o sa poata fi folosita in alt package.
     public void blocheaza(){
-        this.isActive = false;
+
+        if(isActive){
+            this.isActive = false;
+
+        }
     }
 
     public void deblocheaza(){
-        this.isActive = true;
+        if(!isActive){
+            this.isActive = true;
+        }
     }
 
 //    List<String> titulari = Arrays.asList("popescu", "ionescu", "pancu");

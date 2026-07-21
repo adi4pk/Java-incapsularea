@@ -1,6 +1,5 @@
-package app;
+package app.simple;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -54,7 +53,7 @@ public class Persoana {
     public  void  setNume(String nume){
 
         List<String> blacklist= Arrays.asList("ana","maria","alex");
-        if(!blacklist.contains(nume)){
+        if(!blacklist.contains(nume.toLowerCase())){
             this.nume=nume;
         }else{
             System.out.println("numele este pe lista neagra");

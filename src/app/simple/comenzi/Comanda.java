@@ -1,4 +1,4 @@
-package app.comenzi;
+package app.simple.comenzi;
 
 import java.util.ArrayList;
 import java.util.List;

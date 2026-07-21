@@ -1,4 +1,4 @@
-package app.masini;
+package app.simple.masini;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -354,7 +354,7 @@ public class MasinaService {
         ArrayList<String> cars = new ArrayList<>();
 
         for(int i=0; i<masini.size();i++){
-            if(masini.get(i).getPret() > min && masini.get(i).getPret() < max){
+            if(masini.get(i).getPret() >= min && masini.get(i).getPret() <= max){
 
                 String masina = masini.get(i).getMarca() + " " + masini.get(i).getModel();
                 cars.add(masina);

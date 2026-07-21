@@ -1,4 +1,4 @@
-package app.comenzi;
+package app.simple.comenzi;
 
 public class Produs {
 

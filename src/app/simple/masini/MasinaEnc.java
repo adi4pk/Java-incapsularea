@@ -1,11 +1,11 @@
-package app.masini;
-//todo:o clasa este formata din atribute si metode
-public class Masina {
+package app.simple.masini;
+
+public class MasinaEnc {
     //atribute
     private String marca;
     private String model;
     private int kilometraj;
-    private double pret;
+    private int pret;
     private int anFabricatie;
     private String modTransmisie;
 
@@ -14,7 +14,7 @@ public class Masina {
 
     //metode
 
-    public Masina(){
+    public MasinaEnc(){
 
         this.descriere();
         nrInstante++;
@@ -23,11 +23,9 @@ public class Masina {
 
     //todo daca un camp numara instantele, fiecare Constructor() trebuie sa-l incrementeze.
 
-
-    public Masina(String marca, String model, int kilometraj, int pret, int anFabricatie, String modTransmisie){
+    public MasinaEnc(String marca, String model, int kilometraj, int pret, int anFabricatie, String modTransmisie){
         this.marca = marca;
         this.model = model;
-
 
         setKilometraj(kilometraj);
         setPret(pret);
@@ -35,7 +33,6 @@ public class Masina {
         setModTransmisie(modTransmisie);
 
         nrInstante++;
-
     }
 
     public  String descriere(){
@@ -65,19 +62,11 @@ public class Masina {
         return kilometraj;
     }
 
-    public double getPret(){
-        return pret;
+    public int getPret(){
+            return pret;
     }
 
-    public int getAnFabricatie(){
-        return anFabricatie;
-    }
-
-    public String getModTransmisie(){
-        return modTransmisie;
-    }
-
-    public void setPret(double pret){
+    public void setPret(int pret){
         if (pret > 0) {
             this.pret = pret;
             System.out.println(pret);
@@ -113,3 +102,4 @@ public class Masina {
     }
 
 }
+

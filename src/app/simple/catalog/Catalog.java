@@ -1,4 +1,4 @@
-package app.catalog;
+package app.simple.catalog;
 import java.util.ArrayList;
 import java.util.List;
 

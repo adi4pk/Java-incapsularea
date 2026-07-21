@@ -1,11 +1,11 @@
-package app.masini;
-
-public class MasinaEnc {
+package app.simple.masini;
+//todo:o clasa este formata din atribute si metode
+public class Masina {
     //atribute
     private String marca;
     private String model;
     private int kilometraj;
-    private int pret;
+    private double pret;
     private int anFabricatie;
     private String modTransmisie;
 
@@ -14,7 +14,7 @@ public class MasinaEnc {
 
     //metode
 
-    public MasinaEnc(){
+    public Masina(){
 
         this.descriere();
         nrInstante++;
@@ -23,9 +23,11 @@ public class MasinaEnc {
 
     //todo daca un camp numara instantele, fiecare Constructor() trebuie sa-l incrementeze.
 
-    public MasinaEnc(String marca, String model, int kilometraj, int pret, int anFabricatie, String modTransmisie){
+
+    public Masina(String marca, String model, int kilometraj, int pret, int anFabricatie, String modTransmisie){
         this.marca = marca;
         this.model = model;
+
 
         setKilometraj(kilometraj);
         setPret(pret);
@@ -33,6 +35,7 @@ public class MasinaEnc {
         setModTransmisie(modTransmisie);
 
         nrInstante++;
+
     }
 
     public  String descriere(){
@@ -62,11 +65,19 @@ public class MasinaEnc {
         return kilometraj;
     }
 
-    public int getPret(){
-            return pret;
+    public double getPret(){
+        return pret;
     }
 
-    public void setPret(int pret){
+    public int getAnFabricatie(){
+        return anFabricatie;
+    }
+
+    public String getModTransmisie(){
+        return modTransmisie;
+    }
+
+    public void setPret(double pret){
         if (pret > 0) {
             this.pret = pret;
             System.out.println(pret);
@@ -74,7 +85,7 @@ public class MasinaEnc {
     }
 
     public void setKilometraj(int kilometraj){
-        if(kilometraj >=0){
+        if(kilometraj >0){
             this.kilometraj = kilometraj;
         } else System.out.println("Kilometrajul nu poate fi 0 sau mai mic");
     }
@@ -102,4 +113,3 @@ public class MasinaEnc {
     }
 
 }
-

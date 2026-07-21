@@ -1,12 +1,13 @@
 package app;
 
 
-import app.Banca.ContBancar;
-import app.catalog.Catalog;
-import app.comenzi.Comanda;
-import app.comenzi.Produs;
-import app.masini.Masina;
-import app.masini.MasinaEnc;
+import app.simple.Banca.ContBancar;
+import app.simple.Persoana;
+import app.simple.catalog.Catalog;
+import app.simple.comenzi.Comanda;
+import app.simple.comenzi.Produs;
+import app.simple.masini.Masina;
+import app.simple.masini.MasinaEnc;
 
 public class Main {
     public static void main(String[] args) {
