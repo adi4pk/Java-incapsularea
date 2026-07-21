@@ -199,6 +199,14 @@ validează), și ieșiri (gettere). Adaugă `getNume()`, `getVarsta()`, `getOras
   scris cu litere mici, dar compară `nume` direct: „ana" e blocat, „Ana" trece (spre
   deosebire de `setOras`, care normalizează cu `toLowerCase()`). Și: `setKilometraj`
   (`Masina.java:88`) acceptă `>= 0`, dar mesajul zice „nu poate fi 0 sau mai mic".
+- **C11. `MasinaEnc` — gettere incomplete** — `MasinaEnc` are doar `getMarca/getModel/getKm/getPret`,
+  dar îi lipsesc `getAnFabricatie()` și `getModTransmisie()`, pe care `Masina` le are
+  (`Masina.java:72,76`). Ironic tocmai la clasa numită „Enc" (exemplul de încapsulare),
+  care ar trebui să fie cea mai completă. Fără getterele astea nu poți citi din afară anul
+  sau transmisia unui `MasinaEnc`.
+- **C12. Interval cu margini exclusive** — `afiseazaMasinileIntrePreturi`
+  (`MasinaService.java:357`) folosește `getPret() > min && getPret() < max`: o mașină fix
+  la prețul `min` sau `max` e omisă. Un „interval" e de regulă inclusiv (`>=` / `<=`).
 
 \newpage
 
