@@ -32,7 +32,7 @@ public class MasinaEnc {
         setAnFabricatie(anFabricatie);
         setModTransmisie(modTransmisie);
 
-
+        nrInstante++;
     }
 
     public  String descriere(){

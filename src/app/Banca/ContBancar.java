@@ -13,11 +13,14 @@ public class ContBancar {
     // nu impartim acelasi istoric la toate conturile.
     private List<String> istoric = new ArrayList<>();
 
+
+    //todo method public sau private -
+    //daca nu este public nu o sa poata fi folosita in alt package.
     public void blocheaza(){
         this.isActive = false;
     }
 
-    void deblocheaza(){
+    public void deblocheaza(){
         this.isActive = true;
     }
 
@@ -29,7 +32,7 @@ public class ContBancar {
 
     public void setTitular(String titular){
 
-        if(!titular.isEmpty()){
+        if(!titular.equals(null)){
             this.titular = titular;
         }
 
@@ -72,7 +75,7 @@ public class ContBancar {
             //todo
         // GETTER trebuie sa returneze MEREU ceva; // RETURN
 
-        if(!titular.isEmpty()  && !"".equals(titular)){ // ← != pe String compară referințe, nu conținut
+        if(!titular.isEmpty()){ // ← != pe String compară referințe, nu conținut
             System.out.println("Soldul tau curent este: " +sold + "LEI");
             return sold;
         } else{

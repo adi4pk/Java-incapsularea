@@ -23,6 +23,7 @@ public class Persoana {
     public Persoana(){
 
         System.out.println("Eu sunt constructorul fara paramterii");
+        this.descriere();
 
     }
 
@@ -100,5 +101,14 @@ public class Persoana {
         return text;
     }
 
+
+    //getters
+    public String getNume(){return nume;}
+
+    public int getVarsta(){return varsta;}
+
+    public String getOras(){return oras;}
+
+    public String getGen(){return gen;}
 
 }

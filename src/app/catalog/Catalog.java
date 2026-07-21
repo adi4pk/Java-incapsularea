@@ -11,7 +11,7 @@ public class Catalog {
     }
 
     //what happens if you don't add public or private?
-    void adauga(String produs){
+    public void adauga(String produs){
 
 
         //todo verificarea de NULL e mereu prima.

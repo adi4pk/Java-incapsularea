@@ -5,7 +5,7 @@ public class Masina {
     private String marca;
     private String model;
     private int kilometraj;
-    private int pret;
+    private double pret;
     private int anFabricatie;
     private String modTransmisie;
 
@@ -65,7 +65,7 @@ public class Masina {
         return kilometraj;
     }
 
-    public int getPret(){
+    public double getPret(){
         return pret;
     }
 
@@ -77,7 +77,7 @@ public class Masina {
         return modTransmisie;
     }
 
-    public void setPret(int pret){
+    public void setPret(double pret){
         if (pret > 0) {
             this.pret = pret;
             System.out.println(pret);

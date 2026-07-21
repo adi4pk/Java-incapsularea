@@ -119,9 +119,9 @@ public class MasinaService {
 
     int numarMasiniManuale(){
         int nrManuale = 0;
-String txt= "Manuala";
+//String txt= "Manuala";
         for(int i=0;i<masini.size();i++){
-            if(masini.get(i).equals(txt)){
+            if(masini.get(i).equals("Manuala")){
                 nrManuale++;
             }
         }
@@ -222,7 +222,7 @@ String txt= "Manuala";
 
     void afiseazaMasinaCeaMaiScumpa(){
 
-        int pret = 0;
+        double pret = 0;
         String ceaMaiScumpa = "";
 
         for(int i=0; i< masini.size(); i++){
@@ -237,7 +237,7 @@ String txt= "Manuala";
     //16. Cea mai ieftina masina;
     void afiseazaMasinaCeaMaiIeftina(){
 
-        int pretMin = Integer.MAX_VALUE;
+        double pretMin = Integer.MAX_VALUE;
         String ceaMaiIeftina = "";
 
         for(int i=0;i<masini.size();i++){
@@ -302,9 +302,9 @@ String txt= "Manuala";
 
 
     //20. Pretul maxim;
-    int pretMaxim(){
+    double pretMaxim(){
 
-        int pretMaxim = 0;
+        double pretMaxim = 0;
         for(int i=0; i<masini.size();i++){
             if(pretMaxim < masini.get(i).getPret()){
                 pretMaxim = masini.get(i).getPret();
@@ -435,6 +435,10 @@ String txt= "Manuala";
             }
         }
 
+        if(ct == 0){
+            System.out.println("Numarul de masini este 0.");
+        }
+
         double mediePreturi = (double) totalPret / (double) ct;
         System.out.println("Media preturilor pentru: " +marca +": $" + mediePreturi);
         return mediePreturi;
@@ -455,7 +459,7 @@ String txt= "Manuala";
     }
 
     //29. Aplica o reducere tuturor masinilor;
-    void aplicaReducere(int procentReducere){
+    void aplicaReducere(double procentReducere){
 
         // int pretRedus = (100 - procentReducere) / 100; //
         //  100 lei 10%red =>    10%din 100 = 10 pretul este 90
@@ -464,7 +468,8 @@ String txt= "Manuala";
         // se evaluează stânga → dreapta, deci întâi se calculează procentReducere/100
 
         for(int i=0;i<masini.size();i++){
-            double pret= (double) masini.get(i).getPret() - ((double)(procentReducere/100) * (double) masini.get(i).getPret());
+            double pret= (double) masini.get(i).getPret() - (double)((procentReducere/100) * (double) masini.get(i).getPret());
+            masini.get(i).setPret(pret);
         }
 
         afisareMasini();

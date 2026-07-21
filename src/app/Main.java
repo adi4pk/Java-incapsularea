@@ -92,11 +92,11 @@ public class Main {
         Masina a = new Masina();
         Masina b = a;
 
-        a.pret = 666;
-        System.out.println("pret inainte de aliasing " + a.pret);
+        a.setPret(666);
+        System.out.println("pret inainte de aliasing " + a.getPret());
 
-        b.pret = 999;
-        System.out.println(a.pret);
+        b.setPret(999);
+        System.out.println(a.getPret());
     }
 
     public  static void demoInstanteSeparate(){
