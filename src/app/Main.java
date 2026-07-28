@@ -4,6 +4,8 @@ package app;
 import app.relations.Buletin;
 import app.relations.OnToManyBidirectional.Echipa;
 import app.relations.OnToManyBidirectional.Player;
+import app.relations.manyToMany.Curs;
+import app.relations.manyToMany.Student;
 import app.simple.Banca.ContBancar;
 
 import app.simple.catalog.Catalog;
@@ -31,7 +33,8 @@ public class Main {
 //        Nivel2();
 
 //        exRelationare();
-        oneToMany_Echipa();
+//        oneToMany_Echipa();
+        manyToMany_Student_Curs();
     }
 
 
@@ -215,6 +218,35 @@ public class Main {
         System.out.println(j4.getEchipa());
         System.out.println(bayernMuenchen.getJucatori());
 
+        j5.setEchipa(bvbDortmund);      //BUG - nu apelam .setEchipa prin intermediul jucatorului
+                                        // .setEchipa se apeleaza din clasa Echipa, metoda transferEchipa()
+        System.out.println(bvbDortmund.getJucatori());
+
+    }
+
+    public static void manyToMany_Student_Curs(){
+
+        Student s1 = new Student("Popescu", 20);
+        Student s2 = new Student("Mihailovic", 20);
+        Student s3 = new Student("Buia", 20);
+        Student s4 = new Student("Dumitru", 20);
+
+
+        Curs c1 = new Curs("Germana");
+        Curs c2 = new Curs("Desen");
+        Curs c3 = new Curs("Economie");
+
+        c1.inscrieStudent(s1);
+        System.out.println(s1.detaliiStudent());
+
+        c1.inscrieStudent(s2);
+        c1.inscrieStudent(s3);
+        System.out.println(c1.getStudenti());
+
+        c2.inscrieStudent(s1);
+        System.out.println(s1.getCursuri());
+
+//        s1.getCursuri();
 
     }
 }

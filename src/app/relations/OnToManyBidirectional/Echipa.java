@@ -27,6 +27,10 @@ public class Echipa {
         return name;
     }
 
+    @Override
+    public String toString(){
+        return name;
+    }
 
     public void transferEchipa(Player jucator){
 

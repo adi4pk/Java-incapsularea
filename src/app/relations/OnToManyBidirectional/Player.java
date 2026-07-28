@@ -21,6 +21,7 @@ public class Player {
 
     public void setEchipa(Echipa echipa){
         this.echipa = echipa;
+        System.out.println(detailsJucator());
     }
 
     public Echipa getEchipa(){

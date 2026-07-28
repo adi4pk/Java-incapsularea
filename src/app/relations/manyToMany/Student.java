@@ -17,7 +17,7 @@ public class Student {
     public List<Curs> getCursuri(){
 
         List<Curs> cursuriCopie = new ArrayList<>(cursuri);
-        System.out.println("Cursuri inrolate: " + cursuriCopie);
+//        System.out.println("Cursuri inrolate: " + cursuriCopie);
         return cursuriCopie;
     }
 
@@ -30,7 +30,7 @@ public class Student {
         this.varsta = varsta;
     }
 
-    public void adaugaCurs(Curs curs){
+    void adaugaCurs(Curs curs){
 
         if (curs != null){
             if(cursuri.contains(curs)){
@@ -42,7 +42,7 @@ public class Student {
 
     }
 
-    public void removeCurs(Curs curs){
+    void removeCurs(Curs curs){
         cursuri.remove(curs);
 
 
@@ -50,12 +50,13 @@ public class Student {
 
     @Override
     public String toString(){
-        return detaliiStudent();
+        return nume;
     }
 
     public String detaliiStudent(){
 
-        String text = "nume: " + nume +"\n";
+        String text = "";
+        text += "nume: " + nume +"\n";
         text+= "varsta: " + varsta +"\n";
         text+= "Cursuri inrolate: " + getCursuri();
 
