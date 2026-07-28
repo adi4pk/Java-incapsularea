@@ -301,6 +301,29 @@ proiect despre încapsulare, `Produs` e clasa care a rămas fără paznic.
 - **C8** — `Main.Nivel2()` (`Main.java:131`) → `nivel2()` (camelCase).
 - **C11** — `MasinaEnc` fără `getAnFabricatie()`/`getModTransmisie()` (vezi M6).
 
+# Exercițiile de relații — stadiu
+
+Commit-ul `incapsulare-realtii` a adus doar PDF-ul cu exerciții
+(`EXERCITII-RELATII-MODELE.pdf`) și mutarea codului vechi în pachetul `app.simple` —
+**niciun exercițiu de relații nu are încă cod**:
+
+| Nivel | Modele | Stadiu |
+|---|---|---|
+| 0 — one-to-one | `Persoana` + `Buletin` | ⬜ neînceput (nu există `Buletin`) |
+| 1 — one-to-many | `Autor` + `Carte` | ⬜ neînceput |
+| 2 — bidirecțional | `Echipa` + `Jucator` | ⬜ neînceput |
+| 3 — many-to-many | `Student` + `Curs` | ⬜ neînceput |
+| 4 — compoziție/agregare | `Comanda`/`LinieComanda`/`Produs` | 🟨 modelul există dinainte (`app.simple.comenzi`) |
+| Provocări + Capstone | — | ⬜ neîncepute |
+
+La Nivelul 4, codul existent bifează deja o parte din Definition of Done
+(`adaugaLinie` construiește linia în interior, `total()` traversează liniile, `Produs`
+e partajat) — dar **M8 din acest review e fix tema nivelului**: constructori care lasă
+obiecte pe jumătate construite rup exact invarianții pe care exercițiile de relații îi
+antrenează. Repară M8 înainte sau împreună cu Nivelul 4. Iar „regula a doua" din PDF
+(getter de listă = copie) e deja respectată în `extras()`/`toateProdusele()` — de
+păstrat același reflex la listele din `Autor`, `Echipa`, `Curs`.
+
 # Rezumat — ordinea de atac
 
 1. **B1** — `.getModTransmisie()` înainte de `.equals("Manuala")` (a doua oară cu sentimente).
