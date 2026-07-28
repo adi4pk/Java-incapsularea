@@ -1,6 +1,6 @@
 ---
-title: "Code Review — Proiect Încapsulare"
-subtitle: "Analiză completă a codului curent"
+title: "Code Review — Proiect Încapsulare (runda 2)"
+subtitle: "Delta față de review-ul din 21 iulie + constatări noi"
 author: "MyCodeSchool"
 lang: ro
 geometry: margin=2.2cm
@@ -11,78 +11,93 @@ fontsize: 11pt
 
 # Cum citești acest review
 
-Am recitit tot proiectul, clasă cu clasă și metodă cu metodă. Constatările sunt grupate
-pe priorități — atacă-le în ordinea asta:
+Runda 2 — am recitit tot proiectul (inclusiv `comenzi/` — `Produs`, `LinieComanda`,
+care n-au fost sub lupă în runda 1) după commit-urile `incapsulare-realtii` și
+`reorder folder structure` (21 iulie). Documentul are trei părți:
 
-- 🔴 **Critice (B1, B2…)** — bug-uri reale: codul rulează, dar nu face ce pare că face.
-- 🟡 **Importante (M1, M2…)** — design / pattern greșit, chiar tema încapsulării.
-- 🟢 **Cleanups (C1, C2…)** — stil, naming, mărunțișuri.
+1. **Ce ai rezolvat** din runda 1 — ca să știi ce a „prins".
+2. **Constatări noi sau rămase**, pe priorități: 🔴 critice, 🟡 importante, 🟢 cleanups.
+   Numerotarea **continuă** din runda 1 (B3, M6, C13…), ca să putem vorbi de „B1" fără confuzie.
+3. **Q&A** de verificare.
 
-Separ mereu **ce e greșit** (diagnostic cu `fișier:linie`) de **ce înveți din asta**
-(mecanismul de dedesubt, pe scurt). Corecturile NU sunt aplicate în cod — le faci tu,
-apoi rulezi ca să verifici.
+Corecturile NU sunt aplicate în cod — le faci tu, apoi rulezi ca să verifici.
+
+\newpage
+
+# Scoreboard runda 1
+
+| # | Constatare | Status |
+|---|---|---|
+| B1 | `numarMasiniManuale` compară `Masina` cu `String` | 🔴 **DESCHIS** — bug-ul e tot acolo |
+| B2 | `aplicaReducere` — împărțire întreagă + rezultat neaplicat | ✅ Rezolvat (param `double`, `setPret` apelat) |
+| M1 | `MasinaEnc` — constructorul cu 6 parametri nu număra instanțele | ✅ Rezolvat (ambii constructori incrementează) |
+| M2 | `getSold(String titular)` — parametru fără sens | 🟡 Parțial — condiția redundantă a dispărut, restul rămâne |
+| M3 | `mediePreturiMarca` — NaN la marcă inexistentă | 🟡 Parțial — mesaj adăugat, dar împărțirea tot rulează |
+| M4 | Null-checks lipsă | 🟡 Deschis — iar în `setNume` riscul a crescut (vezi M4-bis) |
+| M5 | `Persoana` fără gettere | ✅ Rezolvat |
+| C1 | Importuri nefolosite | ✅ Rezolvat |
+| C9 | Vizibilitate inconsistentă (`deblocheaza`, `adauga`) | ✅ Rezolvat (ambele `public`) |
+| C10 | Blacklist case-sensitive / mesaj kilometraj | ✅ Rezolvat (`toLowerCase()`; condiția aliniată la mesaj) |
+| C12 | Interval de preț cu margini exclusive | ✅ Rezolvat (`>=` / `<=`) |
+| C2–C8, C11 | Restul cleanup-urilor | 🟢 Deschise (lista la final) |
+
+Bilanț bun: 7 rezolvate curat, iar B2 + M1 erau cele mai grase. Au rămas un critic
+vechi, unul nou și câteva jumătăți de fix.
 
 \newpage
 
 # 🔴 Critice
 
-## B1. `numarMasiniManuale` compară un obiect `Masina` cu un `String` → mereu 0
+## B1 (din runda 1) — `numarMasiniManuale` tot compară obiectul cu un `String`
 
-`MasinaService.java:120-131`
+`MasinaService.java:124`
 
 ```java
-int numarMasiniManuale(){
-    int nrManuale = 0;
-    String txt = "Manuala";
-    for(int i=0; i<masini.size(); i++){
-        if(masini.get(i).equals(txt)){   // ← Masina.equals("Manuala") e MEREU false
-            nrManuale++;
-        }
+if(masini.get(i).equals("Manuala")){
+```
+
+Ai șters variabila `txt` (e comentată la linia 122), dar comparația a rămas identică:
+un obiect `Masina` întreg pus la `equals` cu textul `"Manuala"` — mereu `false`, deci
+rezultatul e mereu `0`. Fix-ul e tot cel din runda 1: scoate `String`-ul din obiect
+înainte de comparație, exact ca în `numarMasiniAutomate` (linia 111):
+
+```java
+if(masini.get(i).getModTransmisie().equals("Manuala")){
+```
+
+## B3 (nou) — `setTitular`: `!titular.equals(null)` — garda crapă exact în cazul de care trebuia să apere
+
+`ContBancar.java:41`
+
+```java
+public void setTitular(String titular){
+    if(!titular.equals(null)){
+        this.titular = titular;
     }
-    ...
 }
 ```
 
-`masini.get(i)` e un obiect `Masina` întreg; îl compari cu textul `"Manuala"`. Un
-`Masina` nu va fi niciodată `equals` cu un `String`, deci `nrManuale` rămâne `0`
-indiferent câte mașini manuale ai.
+Două lucruri, ambele rele:
 
-**Mecanismul de învățat:** metoda soră, `numarMasiniAutomate` (linia 106), o face corect:
-```java
-if(masini.get(i).getModTransmisie().equals("Automata")){ ... }
-```
-Diferența e un singur apel — `.getModTransmisie()`, care scoate `String`-ul din obiect
-înainte de comparație. Când ai două metode surori și una merge iar alta nu, citește-le
-paralel: bug-ul e fix diferența dintre ele.
+1. **Pentru orice `titular` non-null**, contractul lui `equals` spune că
+   `x.equals(null)` returnează **mereu `false`** — deci `!titular.equals(null)` e mereu
+   `true`. Condiția nu filtrează nimic.
+2. **Pentru `titular == null`** — chemi metoda `.equals(...)` PE `null`, deci ai
+   `NullPointerException` înainte ca comparația să apuce să se evalueze. Garda crapă
+   fix în singurul caz pe care voia să-l prindă.
 
-## B2. `aplicaReducere` — dublu rupt: împărțire întreagă ȘI rezultatul nu se aplică
-
-`MasinaService.java:458-471`
+**Mecanismul de învățat:** `null` nu e un obiect — e absența unuia. Nu poți chema
+metode pe el, nici măcar `equals`. Verificarea de `null` se face doar cu operatorul
+`==` / `!=`, care compară referința fără să atingă obiectul:
 
 ```java
-void aplicaReducere(int procentReducere){
-    for(int i=0; i<masini.size(); i++){
-        double pret = (double) masini.get(i).getPret()
-                    - ((double)(procentReducere/100) * (double) masini.get(i).getPret());
-    }
-    afisareMasini();
+if(titular != null){
+    this.titular = titular;
 }
 ```
 
-Două bug-uri suprapuse:
-
-1. **Împărțire întreagă:** `procentReducere/100` are ambii operanzi `int`, deci pentru
-   orice procent sub 100 rezultatul e `0` (ex. `10/100 = 0`). Cast-ul `(double)` vine
-   *după* împărțire — prea târziu, zeroul e deja fixat. Reducerea e mereu 0.
-2. **Rezultat neaplicat:** chiar dacă math-ul ar fi corect, `pret` e o variabilă
-   **locală** care nu e pusă înapoi în obiect cu `setPret()`. Se calculează și se aruncă.
-   `afisareMasini()` afișează prețurile neatinse.
-
-**Mecanismul de învățat:** două lecții într-un loc. (a) La împărțire, **măcar un operand
-trebuie să fie `double` ÎNAINTE de `/`** — altfel pierzi partea fracționară. (b) Un
-calcul care nu e scris înapoi în obiect (prin setter) nu are niciun efect: „a calcula" ≠
-„a aplica". Compară cu `cresteKilometrajul` (linia 445), unde chiar apelezi
-`setKilometraj(...)` — de-aia *acolo* schimbarea prinde.
+Ai scris exact varianta corectă cu 14 linii mai jos, în constructorul
+`ContBancar(String titular)` (linia 55: `if(titular != null)`). Compară-le.
 
 \newpage
 
@@ -90,159 +105,226 @@ calcul care nu e scris înapoi în obiect (prin setter) nu are niciun efect: „
 
 | # | Before (actual) | After (corect) |
 |---|---|---|
-| B1 | `if(masini.get(i).equals(txt))` | `if(masini.get(i).getModTransmisie().equals(txt))` |
-| B2 | `double pret = getPret() - (double)(procentReducere/100) * getPret();` *(local, neaplicat)* | `int nou = (int)(getPret() * (100 - procentReducere) / 100.0); masini.get(i).setPret(nou);` |
+| B1 | `if(masini.get(i).equals("Manuala"))` | `if(masini.get(i).getModTransmisie().equals("Manuala"))` |
+| B3 | `if(!titular.equals(null))` | `if(titular != null)` |
 
 \newpage
 
 # 🟡 Importante
 
-## M1. `MasinaEnc` — constructorul cu 6 parametri nu incrementează `nrInstante`
+## M3 (jumătate de fix) — `mediePreturiMarca`: mesajul e afișat, dar NaN-ul tot apare
 
-`MasinaEnc.java:26-36`
-
-`nrInstante++` apare doar în constructorul fără parametri (linia 20). Obiectele create cu
-constructorul complet **nu sunt numărate**, deci `getNrInstante()` returnează un număr
-mai mic decât realitatea.
-
-**Mecanismul de învățat:** în `Masina.java` ai reparat exact asta — ambii constructori
-fac `nrInstante++` (liniile 20 și 37). Fix-ul a fost aplicat pe `Masina`, dar uitat pe
-geamăna `MasinaEnc`. Regula: dacă un câmp `static` numără instanțele, **fiecare**
-constructor trebuie să-l incrementeze.
-
-## M2. `getSold(String titular)` — condiție redundantă, parametru inutil, NPE pe `null`
-
-`ContBancar.java:70-83`
+`MasinaService.java:438-444`
 
 ```java
-public double getSold(String titular){
-    if(!titular.isEmpty() && !"".equals(titular)){   // ambele condiții verifică ACELAȘI lucru
-        System.out.println("Soldul tau curent este: " + sold + "LEI");
-        return sold;
-    } ...
+if(ct == 0){
+    System.out.println("Numarul de masini este 0.");
+}
+
+double mediePreturi = (double) totalPret / (double) ct;   // tot se execută cu ct == 0
+System.out.println("Media preturilor pentru: " +marca +": $" + mediePreturi);
+```
+
+Ai adăugat mesajul (bine!), dar după `if` execuția **continuă**: împărțirea `0.0/0.0`
+tot rulează și utilizatorul vede ambele linii:
+
+```
+Numarul de masini este 0.
+Media preturilor pentru: Dacia: $NaN
+```
+
+**Mecanismul de învățat:** un `if` fără `return` doar *adaugă* un pas, nu *oprește*
+drumul. Când cazul special e tratat, ieși din metodă:
+
+```java
+if(ct == 0){
+    System.out.println("Numarul de masini este 0.");
+    return 0;
 }
 ```
 
-Trei probleme: (1) `!titular.isEmpty()` și `!"".equals(titular)` verifică exact același
-lucru — a doua e redundantă; (2) parametrul `titular` nu e comparat niciodată cu
-`this.titular`, deci orice string nevid „primește" soldul — verificarea nu verifică nimic
-real; (3) dacă primești `null`, `titular.isEmpty()` aruncă `NullPointerException`.
+Ai pattern-ul ăsta deja corect în `depune`/`retrage` (`ContBancar.java:98-101`):
+„cont blocat → mesaj → `return`". Același „early return", alt context.
 
-**Mecanismul de învățat:** un getter curat returnează starea obiectului, nu are nevoie de
-parametru: `public double getSold(){ return sold; }`. Dacă vrei verificare de identitate
-(„ești chiar titularul?"), aia e altă metodă, cu alt nume, care compară
-`titular.equals(this.titular)`.
+Bonus, aceeași metodă, linia 432: `!masini.get(i).getMarca().isEmpty() &&` nu ajută cu
+nimic — o marcă nevidă care nu e egală cu `marca` pică oricum la a doua condiție.
 
-## M3. `mediePreturiMarca` — împărțire la zero când marca nu există
+## M2 (rămas) — `getSold(String titular)`: parametrul tot nu verifică nimic real
 
-`MasinaService.java:426-441`
+`ContBancar.java:79-92`
+
+Condiția redundantă a dispărut, dar esența a rămas: parametrul `titular` nu e comparat
+niciodată cu `this.titular` — orice string nevid „primește" soldul — iar pe `null`,
+`titular.isEmpty()` aruncă NPE. Recomandarea din runda 1 rămâne: getter curat fără
+parametru (`public double getSold(){ return sold; }`); verificarea de identitate, dacă
+o vrei, e o metodă separată care face `titular.equals(this.titular)`.
+
+## M4 / M4-bis — null-checks: fix-ul de la C10 a introdus un NPE nou
+
+- `Persoana.java:56` — `blacklist.contains(nume.toLowerCase())`: `toLowerCase()` pe
+  `null` crapă. În runda 1, `setNume(null)` doar seta greșit; acum aruncă NPE. Fix-ul
+  de case-sensitivity a fost corect, dar a mărit suprafața de `null`.
+- `Persoana.java:76,85` — `setOras`/`setGen`: neschimbate, același risc.
+- `Comanda.java:15` — `!client.isEmpty()`: neschimbat.
+
+**Mecanismul de învățat (recap):** verificarea de `null` e **prima**, legată cu `||`
+short-circuit: `if(nume == null || blacklist.contains(nume.toLowerCase()))`. Ai scris
+deja șablonul perfect în `Catalog.adauga` (`Catalog.java:18`):
+`if(produs == null || produs.equals(""))` — plus comentariul tău „verificarea de NULL
+e mereu prima". Aplică-l și în `Persoana`/`Comanda`.
+
+## M6 (nou) — gemenele au divergat iar: `Masina` a evoluat, `MasinaEnc` a rămas în urmă
+
+Fix-urile din runda asta au fost aplicate doar pe `Masina`:
+
+| Aspect | `Masina` | `MasinaEnc` |
+|---|---|---|
+| `pret` | `double` (`Masina.java:8`), `setPret(double)` | `int` (`MasinaEnc.java:8`), `setPret(int)` la :69 |
+| `setKilometraj` | `> 0` (`Masina.java:88`) | `>= 0` (`MasinaEnc.java:77`) |
+| Gettere | complete | fără `getAnFabricatie()`/`getModTransmisie()` (C11, rămas) |
+
+E firul roșu din runda 1, doar cu rolurile inversate: atunci `Masina` era reparată și
+`MasinaEnc` uitată la `nrInstante`; acum la `pret`/`kilometraj`. Când repari ceva
+într-una din clasele-surori, ultima întrebare înainte de commit e mereu: „geamăna are
+aceeași problemă?". (Discuție separată la curs: ăsta e exact motivul pentru care codul
+duplicat e scump — și puntea spre moștenire.)
+
+## M7 (nou) — comentarii-misconcepție: notițele greșite te învață greșit
+
+Două locuri; contează pentru că notițele din cod devin materialul tău de recapitulare.
+
+**a) `ContBancar.java:161`**
 
 ```java
-double mediePreturi = (double) totalPret / (double) ct;   // ct == 0 → NaN
+// daca folosim == la String sau alte Obiecte -> la string, sistemul va compara doar prima litera
 ```
 
-Pentru o marcă inexistentă, `ct` rămâne `0`, iar `0.0 / 0.0` în `double` dă `NaN`. Nu
-crapă — și de-aia e viclean: afișează „media este: NaN" în loc de un mesaj clar. Verifică
-`ct == 0` înainte de împărțire și tratează cazul explicit, exact ca în `numarMasiniMarca`
-(linia 147).
+Fals. `==` pe obiecte compară **referințele** — „arată cele două variabile spre exact
+același obiect în memorie?" — nu conținutul și nu vreo literă. De-aia două String-uri cu
+același text pot da `false` la `==` (obiecte diferite) și de-aia există `equals`: el
+compară conținutul.
 
-## M4. Verificări de `null` lipsă — NPE pe argument `null`
+**b) `Masina.java:106-107` și `MasinaEnc.java:95-96` (`setModTransmisie`)**
 
-Același tipar în mai multe locuri:
+```java
+return;
+// CONSTRUCTORUL NU POATE RETURNA O VALOARE
+```
 
-- `ContBancar.java:32` — `setTitular`: `!titular.isEmpty()` fără verificare de `null`;
-- `Comanda.java:15` — constructor: `!client.isEmpty()`; dacă primești `""`, obiectul se
-  creează dar `client` rămâne `null`, iar `descriere()` va afișa „null";
-- `Persoana.java:76,85` — `setOras`/`setGen`: `oras.toLowerCase()` / `gen.equalsIgnoreCase(...)` pe `null` crapă.
+Comentariul e într-un **setter**, nu într-un constructor — iar regula e altfel decât
+scrie: și constructorii, și metodele `void` POT folosi `return;` (gol, ca „ieși acum");
+ce nu pot constructorii e `return valoare;`. Separat, acest `return;` e ultima
+instrucțiune din metodă — metoda se termina oricum, deci nu face nimic.
 
-**Mecanismul de învățat:** verificarea de `null` se pune **prima**, cu `||`:
-`x == null || x.isEmpty()`. Operatorul `||` se oprește la primul `true` (*short-circuit*),
-deci dacă `x` e `null`, partea dreaptă nici nu se mai evaluează — exact ce te apără de NPE.
+## M8 (nou) — constructori care refuză valoarea dar construiesc obiectul pe jumătate
 
-## M5. `Persoana` — cutie doar-scriere: settere multe, niciun getter
+Același tipar în ambele clase din `comenzi`:
 
-`Persoana.java`
+**`LinieComanda.java:9-18`**
 
-`descriere()` e `public` (bun), dar clasa n-are niciun getter. Poți **scrie** valorile
-(settere validate), dar nu le poți **citi** individual din afară. Încapsularea nu
-înseamnă „totul privat" — înseamnă **acces controlat**: și intrări (settere care
-validează), și ieșiri (gettere). Adaugă `getNume()`, `getVarsta()`, `getOras()`,
-`getGen()`.
+```java
+public LinieComanda(Produs produs, int cantitate){
+    this.produs = produs;                 // fără null-check → NPE mai târziu, în subtotal()
+    if(cantitate >=1){
+        this.cantitate = cantitate;
+    } else {
+        System.out.println("cantitatea nu poate fi mai mica de 1.");
+    }
+}
+```
+
+Dacă `cantitate` e 0, mesajul se afișează, dar **obiectul tot se creează**, cu
+`cantitate = 0` — o linie de comandă „fantomă" cu subtotal 0. Iar dacă `produs` e
+`null`, construcția reușește și abia `subtotal()` crapă cu NPE, departe de locul
+greșelii. Același lucru în `Comanda.java:14-18`: `client` invalid → obiect creat cu
+`client = null`, iar `total()` afișează „Totalul comenzii lui null".
+
+**Mecanismul de învățat:** un constructor e paznicul **invariantului** clasei — promisiunea
+că „orice `LinieComanda` care există e validă". Un `if` care doar afișează mesajul și
+merge mai departe rupe promisiunea: refuză valoarea, dar livrează obiectul stricat.
+La nivelul de acum (fără excepții încă), soluția practică e să validezi **înainte** de
+`new` — exact ce face `Comanda.adaugaLinie` (linia 23), care nu creează linia dacă
+`cantitate < 1`. De discutat la curs: pasul următor e ca constructorul să arunce
+`IllegalArgumentException` — atunci obiectul invalid nici nu apucă să existe.
+
+Contrast interesant: `Produs` (`Produs.java:8-11`) nu validează **nimic** — acceptă
+preț negativ și nume `null`, deși `Masina.setPret` refuză prețuri negative. Într-un
+proiect despre încapsulare, `Produs` e clasa care a rămas fără paznic.
 
 \newpage
 
 # 🟢 Cleanups
 
-- **C1. Importuri nefolosite** — `Main.java:3-5` (`ArrayList`, `Arrays`, `List` — niciunul
-  folosit); `Persoana.java:3` (`ArrayList`; `Arrays` și `List` sunt folosite, `ArrayList` nu).
-- **C2. `Catalog.contine`** (`Catalog.java:39-44`) — `if(x) return x; else return false;`
-  apelează `contains` de două ori; scrie direct `return produse.contains(produs);`.
-- **C3. Raw types** — `new ArrayList(produse)` (`Catalog.java:63`) și `new ArrayList(istoric)`
-  (`ContBancar.java:140`) → `new ArrayList<>(...)`, altfel pierzi verificarea de tip la compilare.
-- **C4. An hardcodat** — `setAnFabricatie` acceptă până la `2025` (`Masina.java:94`,
-  `MasinaEnc.java:83`); suntem în 2026, mașinile din anul curent sunt respinse.
-- **C5. Marcă+model fără spațiu** — `afiseazaMarcaModel` (`MasinaService.java:84`) afișează
-  „AudiA4"; lipsește un `" "` între ele.
-- **C6. Settere care printează / apel inutil** — `setPret` și `setAnFabricatie`
-  (`Masina`/`MasinaEnc`) afișează valoarea; un setter setează, afișarea e treaba
-  apelantului. Tot aici: constructorul fără parametri (`Masina.java:19`, `MasinaEnc.java:19`)
-  apelează `this.descriere()` și aruncă rezultatul — apel fără efect.
-- **C7. `Comanda.descriere()`** (`Comanda.java:30-39`) — printează, cheamă `total()` (care
-  printează și el) și returnează `""`. Alege un contract: ori construiește și returnează
-  textul (ca `Masina.descriere()`), ori e `void afiseaza()`.
-- **C8. Naming** — `Main.Nivel2()` (`Main.java:130`) e PascalCase; convenția Java pentru
-  metode e `camelCase`: `nivel2()`.
-- **C9. Vizibilitate inconsistentă** — `blocheaza()` e `public`, `deblocheaza()` e
-  package-private (`ContBancar.java:16,20`); `adauga` e package-private (`Catalog.java:14`).
-  Pentru tema încapsulării, decide explicit ce face parte din API-ul public al clasei.
-- **C10. Validări inconsistente** — `Persoana.setNume` (`Persoana.java:55`) are blacklist
-  scris cu litere mici, dar compară `nume` direct: „ana" e blocat, „Ana" trece (spre
-  deosebire de `setOras`, care normalizează cu `toLowerCase()`). Și: `setKilometraj`
-  (`Masina.java:88`) acceptă `>= 0`, dar mesajul zice „nu poate fi 0 sau mai mic".
-- **C11. `MasinaEnc` — gettere incomplete** — `MasinaEnc` are doar `getMarca/getModel/getKm/getPret`,
-  dar îi lipsesc `getAnFabricatie()` și `getModTransmisie()`, pe care `Masina` le are
-  (`Masina.java:72,76`). Ironic tocmai la clasa numită „Enc" (exemplul de încapsulare),
-  care ar trebui să fie cea mai completă. Fără getterele astea nu poți citi din afară anul
-  sau transmisia unui `MasinaEnc`.
-- **C12. Interval cu margini exclusive** — `afiseazaMasinileIntrePreturi`
-  (`MasinaService.java:357`) folosește `getPret() > min && getPret() < max`: o mașină fix
-  la prețul `min` sau `max` e omisă. Un „interval" e de regulă inclusiv (`>=` / `<=`).
+## Noi
 
-\newpage
+- **C13. Gardurile din `blocheaza`/`deblocheaza` nu schimbă nimic** —
+  `ContBancar.java:21,28`: a seta `isActive = false` când e deja `false` produce exact
+  aceeași stare; `if`-ul e cod în plus fără efect observabil. Ar căpăta sens doar dacă
+  ramura „deja blocat" ar face ceva (mesaj sau intrare în `istoric`) — altfel, versiunea
+  din runda 1 (fără `if`) era mai simplă și la fel de corectă.
+- **C14. Comentarii rătăcite** — `ContBancar.java:84`: `// ← != pe String compară
+  referințe...` e lipit de o linie care folosește `isEmpty()`, nu `!=`; și
+  `MasinaService.java:249`: `//prints the last result of masini.get(i).marca` descrie un
+  bug care nu mai există (metoda afișează corect cea mai ieftină mașină). Rămase de la
+  refactor-uri; șterge-le sau mută-le unde chiar sunt relevante.
+- **C15. `setKilometraj > 0` respinge acum 0 km** — `Masina.java:88`: ai aliniat
+  condiția la mesaj (ok ca decizie), dar o mașină nouă are legitim 0 km. De discutat
+  care era intenția; era la fel de valid să corectezi mesajul și să păstrezi `>= 0`.
+  Notă: pe `MasinaEnc.java:77-79` a rămas exact nepotrivirea veche (condiție `>= 0`,
+  mesaj „nu poate fi 0 sau mai mic") — încă un exemplu pentru M6.
+- **C16. `getSold` afișează „1000.0LEI"** — `ContBancar.java:85`: lipsește spațiul
+  înainte de „LEI" (frate cu C5 „AudiA4").
+- **C17. `descriere()` returnează `null`** — `ContBancar.java:133-136`: apelantul face
+  `System.out.println(cont.descriere())` și vede „Titularul nu exista." urmat de
+  „null". Returnează `""` (sau doar textul de eroare) în loc de `null`. Tot aici:
+  constructorul cu 1 parametru printează `descriere()` (linia 63), cel cu 2 parametri
+  nu — comportament inconsistent între constructori, iar afișarea nu e treaba
+  constructorului (vezi C6).
+- **C18. Contoare de unică folosință** — `cautaPrimaMasinaMarca`
+  (`MasinaService.java:371-382`): `ctMasina++` urmat imediat de `return` înseamnă că
+  după buclă `ctMasina` e mereu 0 — `if(ctMasina == 0)` e echivalent cu „dacă am ajuns
+  aici". Poți șterge contorul: mesajul de „negăsit" de după buclă se execută oricum
+  doar când `return`-ul din buclă nu s-a întâmplat. Similar `ct`+`break` în
+  `existaMasinaMarca` (:388-397).
+- **C19. `numarMasiniNoisiIeftine` tace când rezultatul e 0** — `MasinaService.java:417-421`:
+  toate metodele-surori afișează ceva și pentru „nimic găsit"; asta returnează 0 în
+  liniște. Aliniaz-o la restul (mesaj + `return ct;` simplu, fără `if` pe afișare).
 
-# Ce e deja bine făcut
+## Rămase din runda 1 (neschimbate)
 
-Merită spus explicit, ca să știi ce să păstrezi:
-
-- **Copii defensive** — `extras()` (`ContBancar.java:140`), `toateProdusele()`
-  (`Catalog.java:63`) și `afiseazaMasiniOrdonateDupaPret()` (`MasinaService.java:481`)
-  lucrează pe o copie a listei, nu pe cea originală. Exact așa se protejează starea internă.
-- **Câmpuri instanță, nu static** — comentariile din `Comanda.java:10` și `ContBancar.java:12`
-  arată că ai înțeles de ce `istoric`/`listaLinii` sunt pe obiect, nu pe clasă.
-- **Validare la intrare** — majoritatea setterelor verifică valorile înainte să scrie
-  (vârstă ≥ 0, preț > 0, oraș din listă). E chiar miezul încapsulării.
+- **C2** — `Catalog.contine` (`Catalog.java:41-43`): `return produse.contains(produs);` direct.
+- **C3** — raw types: `new ArrayList(produse)` (`Catalog.java:63`), `new ArrayList(istoric)` (`ContBancar.java:149`) → `new ArrayList<>(...)`.
+- **C4** — an hardcodat `2025` (`Masina.java:94`, `MasinaEnc.java:83`); suntem în 2026.
+- **C5** — „AudiA4" fără spațiu (`MasinaService.java:84`).
+- **C6** — settere care printează (`setPret`, `setAnFabricatie`); constructorii fără parametri apelează `descriere()` și aruncă rezultatul (`Masina.java:19`, `MasinaEnc.java:19`, `Persoana.java:25`).
+- **C7** — `Comanda.descriere()` (`Comanda.java:30-39`): printează + cheamă `total()` (care printează și el) + returnează `""` — alege un singur contract.
+- **C8** — `Main.Nivel2()` (`Main.java:131`) → `nivel2()` (camelCase).
+- **C11** — `MasinaEnc` fără `getAnFabricatie()`/`getModTransmisie()` (vezi M6).
 
 # Rezumat — ordinea de atac
 
-1. **B1** — `numarMasiniManuale`: adaugă `.getModTransmisie()` înainte de `.equals(txt)`.
-2. **B2** — `aplicaReducere`: repară împărțirea (`/100.0`) **și** aplică rezultatul cu `setPret`.
-3. **M1** — `MasinaEnc`: `nrInstante++` și în constructorul cu 6 parametri.
-4. **M2–M5** — getter curat pentru sold, `ct == 0` la medie, `null`-checks, gettere pe `Persoana`.
-
-Firul roșu: când ai **două entități surori** — una corectă, una nu
-(`numarMasiniAutomate` vs `numarMasiniManuale`, `Masina` vs `MasinaEnc`) — citește-le
-paralel. Bug-ul e mereu diferența dintre ele.
+1. **B1** — `.getModTransmisie()` înainte de `.equals("Manuala")` (a doua oară cu sentimente).
+2. **B3** — `setTitular`: `titular != null`, nu `!titular.equals(null)`.
+3. **M3** — `return 0;` în interiorul lui `if(ct == 0)`.
+4. **M8** — validare în `Produs`/`LinieComanda`/`Comanda`, fără obiecte pe jumătate construite.
+5. **M6** — plimbă fix-urile de pe `Masina` și pe `MasinaEnc` (pret `double`, gettere lipsă).
+6. **M4** — null-checks după șablonul tău din `Catalog.adauga`.
+7. **M7** — corectează comentariile despre `==` și despre `return;`.
 
 # Q&A — verifică-ți înțelegerea
 
-1. În `numarMasiniManuale`, de ce `masini.get(i).equals("Manuala")` e mereu `false`, deși
-   mașina chiar are transmisia „Manuala"? Ce tip e în stânga lui `equals` și ce tip e în
-   dreapta?
+1. **B3:** De ce `titular.equals(null)` nu poate returna `true` niciodată pentru un
+   `titular` valid? Și ce se întâmplă, pas cu pas, când `titular` chiar E `null` —
+   pe ce linie și de ce apare excepția?
 
-2. Presupune că în `aplicaReducere` repari doar împărțirea (faci `/100.0`), dar lași
-   `double pret = ...` ca variabilă locală. Rulezi metoda. Ce prețuri afișează
-   `afisareMasini()` și de ce? Ce linie lipsește ca schimbarea să „prindă"?
+2. **M3:** Apelezi `mediePreturiMarca("Dacia")` (marcă inexistentă în listă). Exact ce
+   două linii se afișează în consolă, în ce ordine, și ce singur cuvânt-cheie lipsește
+   ca a doua linie să nu mai apară deloc?
 
-3. Creezi 3 obiecte `MasinaEnc`: unul cu `new MasinaEnc()` și două cu constructorul de 6
-   parametri. Cât returnează `MasinaEnc.getNrInstante()` și de ce nu 3? Unde „locuiește"
-   câmpul `nrInstante` — în fiecare obiect, sau unul singur în clasă?
+3. **M8:** Rulezi `new LinieComanda(produsValid, 0)`. Se creează obiectul? Ce valoare
+   are `cantitate` și ce returnează `subtotal()`? Ce promisiune („invariant") a clasei
+   e ruptă — și unde în `Comanda` există deja o verificare care previne exact cazul ăsta?
+
+4. **M6:** `aplicaReducere` merge acum pe `Masina` pentru că `setPret` primește
+   `double`. Dacă ai copia metoda identic într-un `MasinaEncService`, ar compila?
+   Ce s-ar întâmpla la `setPret(pret)` și de ce tipul parametrului contează aici?
