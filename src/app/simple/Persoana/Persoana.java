@@ -1,4 +1,4 @@
-package app.simple;
+package app.simple.Persoana;
 
 import java.util.Arrays;
 import java.util.List;

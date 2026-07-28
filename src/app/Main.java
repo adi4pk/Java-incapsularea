@@ -1,20 +1,24 @@
 package app;
 
 
+import app.relations.Buletin;
+import app.relations.OnToManyBidirectional.Echipa;
+import app.relations.OnToManyBidirectional.Player;
 import app.simple.Banca.ContBancar;
-import app.simple.Persoana;
+
 import app.simple.catalog.Catalog;
 import app.simple.comenzi.Comanda;
 import app.simple.comenzi.Produs;
 import app.simple.masini.Masina;
 import app.simple.masini.MasinaEnc;
+import app.relations.Persoana;
 
 public class Main {
     public static void main(String[] args) {
 
 //      ContBancar contBancarTest=  ex4();
 
-        ex4();
+//        ex4();
 
 //        ContBancar contBancar = new ContBancar("test");
 
@@ -26,21 +30,24 @@ public class Main {
 //        creareCatalog();
 //        Nivel2();
 
+//        exRelationare();
+        oneToMany_Echipa();
     }
 
 
-    public  static  void ex1(){
-        Persoana pers1 = new Persoana();
 
-        Persoana pers2= new Persoana(12);
-
+//    public  static  void ex1(){
+//        Persoana pers1 = new Persoana();
 //
-//        pers1.setNume("ana");
-//        pers1.setVarsta(-1);
-//        pers1.setOras("Bucuresti");
-
-        Persoana pers3 = new Persoana("Adi", 30, "Craiova", "masculin");
-    }
+//        Persoana pers2= new Persoana(12);
+//
+////
+////        pers1.setNume("ana");
+////        pers1.setVarsta(-1);
+////        pers1.setOras("Bucuresti");
+//
+//        Persoana pers3 = new Persoana("Adi", 30, "Craiova", "masculin");
+//    }
 
     public static ContBancar ex4(){
 
@@ -144,4 +151,70 @@ public class Main {
 
     }
 
+
+    public static void exRelationare(){
+
+        Persoana pers1 = new Persoana("Andrei", 20);
+
+        Persoana pers2 = new Persoana("Bogdan", 30);
+
+
+        Buletin b1 = new Buletin("VECHI", 12345);
+        Buletin b2 = new Buletin("NOU", 17);
+
+        pers1.atribuieBuletin(b1);
+        System.out.println(pers1.descriere());
+
+
+
+        pers1.atribuieBuletin(b2);
+        System.out.println(pers1.descriere());
+
+        System.out.println(b2.getPersoana().descriere());
+        System.out.println(b1.getPersoana().descriere());
+
+    }
+
+    public static void oneToMany_Echipa(){
+
+        Player j1 = new Player("Dembele", 25);
+
+        Player j2 = new Player("Mbappe", 27);
+
+        Echipa realMadrid = new Echipa("Real Madrid");
+        realMadrid.transferEchipa(j2);
+
+
+
+        System.out.println(realMadrid.getJucatori());
+        System.out.println(j1.detailsJucator());
+        System.out.println(j1.detailsJucator());
+
+        Echipa psg = new Echipa("Paris Saint-German");
+        psg.transferEchipa(j1);
+
+        System.out.println(j1.detailsJucator());
+
+        Player j3 = new Player("Diomande", 19);
+
+        Echipa bvbDortmund = new Echipa("Borussia Dortmund");
+        Player j4 = new Player("Adeyemi", 25);
+        bvbDortmund.transferEchipa(j4);
+
+        Player j5 = new Player("Olise", 23);
+
+        Echipa bayernMuenchen = new Echipa("Bayern Muenchen");
+        bayernMuenchen.transferEchipa(j4);
+        bayernMuenchen.transferEchipa(j5);
+
+        System.out.println(bayernMuenchen.getJucatori());
+
+        bayernMuenchen.incheieContract(j1);
+        bayernMuenchen.incheieContract(j4);
+
+        System.out.println(j4.getEchipa());
+        System.out.println(bayernMuenchen.getJucatori());
+
+
+    }
 }
