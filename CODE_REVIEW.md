@@ -1,99 +1,99 @@
 # Code Review — adrian-incapsularea
 
-**Scop:** review pe livrarea nouă (`aa00fbd..1bd3893`) — modulele `manyToMany` (Student/Curs), `compozitieVSagregare` (Comanda/LinieComanda/Produs), demo-ul `oneToMany` bidirectional și curățenia din `Main`.
+**Scop:** review pe relații OOP — `manyToMany`, `compozitieVSagregare`, `oneToMany` bidirectional.
 
-**Focus lecție:** încapsularea relațiilor (cine are voie să modifice legătura) și corectitudinea sincronizării bidirecționale.
+> Document pe **runde**. Runda 2 (corecturi `7789d19`) e sus; runda 1 (istoric) e jos.
 
 ---
+
+# Runda 2 — corecturi (`1bd3893..7789d19`)
+
+Bine făcut: B1, B2 și B3 din runda 1 sunt **rezolvate corect**, cu comentarii care explică *de ce* — exact ce voiam să înțelegi, nu doar să repari. Dar corectura a introdus una nouă și a rezolvat B4 doar pe jumătate.
 
 ## 🔴 Critice
 
-### B1 — `Comanda.total()` acumulează într-un câmp, nu într-o variabilă locală
-`src/app/relations/compozitieVSagregare/Comanda.java:33`
-
-`total` e câmp de instanță și nu se resetează la începutul metodei. La al doilea apel al lui `total()` valoarea se adună peste cea veche → rezultat dublat. Un total ar trebui să fie o funcție **pură** de liniile comenzii: aceleași linii → același rezultat, oricâte apeluri.
-
-### B2 — `LinieComanda.getSubtotal()` este un getter care mută starea
-`src/app/relations/compozitieVSagregare/LinieComanda.java:27`
+### B1 (nou) — `getArrLinii()` returnează acum lista internă direct → încapsulare spartă
+`src/app/relations/compozitieVSagregare/Comanda.java:26`
 
 ```java
-subtotal += (double) produs.getPret() * cantitate;
-```
-
-Un `get...()` trebuie să **citească**, nu să modifice. Aici câmpul `subtotal` crește cu `pret*cantitate` la fiecare citire. Fiindcă `Comanda.total()` apelează `getSubtotal()`, orice recalcul umflă subtotalul fiecărei linii — bug-ul se compune cu B1.
-
-### B3 — `Echipa.transferEchipa()` scoate jucătorul dintr-o COPIE a listei
-`src/app/relations/OnToManyBidirectional/Echipa.java:46`
-
-```java
-Echipa oldTeam = jucator.getEchipa();
-if (oldTeam != null){
-    oldTeam.getJucatori().remove(jucator);
+public List<LinieComanda> getArrLinii(){
+    return arrLinii;          // înainte: return new ArrayList<>(arrLinii);
 }
 ```
 
-`getJucatori()` întoarce o copie defensivă (`new ArrayList<>(jucatori)`) — corect pentru încapsulare. Exact de aceea `.remove()` pe rezultatul lui nu atinge lista reală a vechii echipe. După transfer, vechea echipă **tot îl conține** pe jucător → relația bidirecțională rămâne desincronizată. Ăsta e chiar obiectivul lecției one-to-many bidirectional.
-
-### B4 — `nrComanda` / `numarLinie` sunt câmpuri de instanță cu `++` → mereu 2
-`src/app/relations/compozitieVSagregare/Comanda.java:7,15` · `.../LinieComanda.java:5,12`
-
-```java
-private int nrComanda = 1;
-public Comanda(){ nrComanda++; }   // fiecare comandă ajunge la 2
-```
-
-Un increment pe câmp de instanță nu produce numere unice — fiecare obiect pornește de la 1 și devine 2. Dacă intenția era un ID auto-incremental, contorul trebuie să fie `static` (partajat între toate instanțele).
-
----
+Ai scos copia defensivă ca să eviți copierea la fiecare iterație (M1 din runda 1) — corect ca intenție, dar ai overcorectat: acum oricine din afară primește **referința la lista reală** și poate face `comanda.getArrLinii().clear()` peste starea comenzii. Fix corect: iterezi `arrLinii` **direct în interiorul clasei** (ce ai și făcut în `total()`), dar getter-ul public rămâne cu copie defensivă. Cele două nu se bat cap în cap.
 
 ## 🟡 Importante
 
-### M1 — `total()` copiază lista la fiecare iterație
-`src/app/relations/compozitieVSagregare/Comanda.java:32-33`
+### M1 — contor `static` fără câmp de instanță care să CAPTEZE valoarea
+`src/app/relations/compozitieVSagregare/Comanda.java:7,15` · `.../LinieComanda.java:5,12`
 
-`getArrLinii()` (care face `new ArrayList<>`) e apelat și în condiția `for`, și în corp, la fiecare pas → o copie nouă a listei de fiecare dată. Iterează o singură dată pe lista internă cu un `for-each`.
+```java
+private static int nrComanda = 1;
+public Comanda(){ nrComanda++; }
+```
 
-### M2 — `level4_Comanda()` este metodă moartă/incompletă
-`src/app/Main.java`
+Ai prins jumătatea bună: contorul trebuie `static` (partajat între toate instanțele). Dar acum `nrComanda` e **doar** contorul — nu există un câmp de instanță care să rețină numărul *acestei* comenzi. Toate obiectele citesc aceeași valoare curentă a contorului, deci nu obții ID-uri unice per obiect. Îți trebuie amândouă: un `static` care numără + un câmp de instanță care fotografiază valoarea la construcție.
 
-Creează `p1,p2,p3` și `new Comanda()`, dar nu adaugă nicio linie, nu apelează `total()`, iar `p2`/`p3` nu se folosesc. Nu e nici apelată din `main()`. Ori o completezi ca demo (adaugă linii + print total), ori o scoți.
+### M2 — `subtotal` calculat o singură dată, la construcție → se învechește
+`src/app/relations/compozitieVSagregare/LinieComanda.java:16,19,27`
+
+`setSubtotal()` e chemat doar în constructor. Dacă apelezi `setCantitate(5)` după creare, `subtotal` rămâne cel vechi și `getSubtotal()` întoarce o valoare stală. Câmp derivat care nu se recalculează când se schimbă sursele lui. Fix: ori recalculezi în `setCantitate`/`setProdus`, ori calculezi on-the-fly în getter (`return produs.getPret() * cantitate;`) și scapi complet de câmpul `subtotal`.
+
+### M3 — `total()` e `void` + `getTotal()` citește câmpul → dependență de ordine
+`src/app/relations/compozitieVSagregare/Comanda.java:29,39`
+
+`getTotal()` întoarce corect doar *după* ce ai chemat `total()`. În `Main` se vede: primul `getTotal()` printează „LEI 0.0" pentru că `total()` n-a rulat încă. Mai curat și fără capcane: `total()` să **returneze** valoarea, iar `getTotal()` s-o formateze apelând `total()` — un singur punct de adevăr, imposibil să-l citești „gol".
+
+## ✅ Rezolvate în runda 2
+
+| # runda 1 | Ce era | Cum ai reparat |
+|---|---|---|
+| B1 | `total()` acumula în câmp (dubla la reapel) | `total = 0;` la începutul metodei ✅ |
+| B2 | `getSubtotal()` muta starea cu `+=` | split în `setSubtotal()` (assignment) + `getSubtotal()` pur ✅ |
+| B3 | `oldTeam.getJucatori().remove(x)` pe copie | `oldTeam.jucatori.remove(x)` pe lista reală, cu comentariu corect despre copia shallow ✅ |
+| B4 | contor pe câmp de instanță `++` → mereu 2 | trecut pe `static` → **parțial**, vezi M1 |
 
 ---
 
-## 🟢 Cleanups
-
-### C1 — cod comentat lăsat în urmă
-`src/app/Main.java` — importurile `catalog/comenzi` și metodele `creareCatalog()`, `Nivel2()` comentate în bloc. La predare le-aș șterge; sunt acoperite de modulul nou.
-
-### C2 — `System.out.println` în setter
-`src/app/relations/OnToManyBidirectional/Player.java:23` — `setEchipa()` face I/O. Ok pentru demo, dar print-ul stă mai bine în `detailsJucator()`, apelat explicit din `main`.
-
-### Notă — NU e bug: `j5.setEchipa(bvbDortmund)`
-`src/app/Main.java` — Adrian a marcat singur cu comentariu „BUG - nu apelăm .setEchipa prin jucător". Bună conștientizare: setează doar direcția player→echipă, deci `bvbDortmund.getJucatori()` nu-l conține. E reversul didactic al lui B3, nu o eroare de corectat.
-
----
-
-## Before / After (în document, NU aplicat în cod)
+## Before / After runda 2 (în document, NU aplicat în cod)
 
 | # | Acum | Corect |
 |---|------|--------|
-| B1 | `private double total;`<br>`public double total(){`<br>`  for(...) total += ...getSubtotal();`<br>`  return total; }` | `public double total(){`<br>`  double total = 0;`<br>`  for (LinieComanda l : arrLinii)`<br>`    total += l.getSubtotal();`<br>`  return total; }` |
-| B2 | `private double subtotal;`<br>`public double getSubtotal(){`<br>`  subtotal += produs.getPret()*cantitate;`<br>`  return subtotal; }` | `public double getSubtotal(){`<br>`  return produs.getPret() * cantitate;`<br>`}`  *(fără câmp `subtotal`)* |
-| B3 | `oldTeam.getJucatori().remove(jucator);` | `oldTeam.incheieContract(jucator);`<br>*(operează pe lista reală)* |
-| B4 | `private int nrComanda = 1;`<br>`public Comanda(){ nrComanda++; }` | `private static int counter = 0;`<br>`private final int nrComanda = ++counter;` |
+| B1 | `public List<LinieComanda> getArrLinii(){`<br>`  return arrLinii; }` | `public List<LinieComanda> getArrLinii(){`<br>`  return new ArrayList<>(arrLinii); }`<br>*(în `total()` iterezi `arrLinii` direct — ai deja)* |
+| M1 | `private static int nrComanda = 1;`<br>`public Comanda(){ nrComanda++; }` | `private static int counter = 0;`<br>`private final int nrComanda = ++counter;` |
+| M2 | `setSubtotal()` doar în constructor | `public double getSubtotal(){`<br>`  return produs.getPret() * cantitate; }`<br>*(fără câmp `subtotal`)* |
+| M3 | `public void total(){ ... }`<br>`getTotal()` citește `this.total` | `public double total(){ ... return total; }`<br>`getTotal(){ return "... LEI " + total(); }` |
+
+## Q&A runda 2
+
+1. **B1:** Ai scos copia defensivă din getter ca să nu copiezi la fiecare iterație. De ce puteai să rezolvi viteza *fără* să sacrifici încapsularea? (Indiciu: cine iterează lista — codul din interiorul clasei sau cel din afară?)
+2. **M1:** Dacă faci `new Comanda()` de 3 ori și apoi citești `nrComanda` la fiecare, ce valoare obții pe fiecare? De ce nu-ți dă „1, 2, 3"? Ce câmp lipsește?
+3. **M3:** De ce e riscant ca `getTotal()` să depindă de faptul că ai chemat `total()` înainte? Ce se întâmplă dacă altcineva folosește clasa ta și uită pasul ăsta?
 
 ---
-
-## Q&A — verificare înțelegere
-
-1. **B2:** De ce spunem că un `getSubtotal()` care face `+=` „minte"? Ce garanție se așteaptă de la un getter și ce se întâmplă dacă apelezi metoda de două ori la rând?
-2. **B3:** `getJucatori()` întoarce o copie ca să protejeze lista internă — lucru bun. De ce tocmai bunătatea asta face ca `getJucatori().remove(x)` să nu șteargă nimic din echipă? Ce metodă din `Echipa` operează pe lista reală?
-3. **B4:** Care e diferența dintre un câmp `static` și unul de instanță când vrei un contor unic pe toate comenzile? De ce `private int nrComanda = 1; nrComanda++;` dă mereu 2?
-
 ---
 
-## Ce a mers bine
+# Runda 1 — livrare inițială (`aa00fbd..1bd3893`)
 
-- Copii defensive consecvente pe toate getterele de listă (`getCursuri`, `getStudenti`, `getJucatori`, `getArrLinii`).
-- Sincronizare bidirecțională **corectă** în `Curs.inscrieStudent` / `removeStudent` (adaugă în ambele direcții, verifică duplicat).
-- Restrângerea vizibilității `adaugaCurs` / `removeCurs` la package-private — exact ideea de încapsulare a relației: doar `Curs` poate modifica legătura, nu oricine din afară.
+*(istoric — toate rezolvate sau reclasate în runda 2)*
+
+## 🔴 Critice
+- **B1** `Comanda.total()` acumula în câmpul `total` (nu resetat) → dubla la al doilea apel. → rezolvat.
+- **B2** `LinieComanda.getSubtotal()` getter care muta starea (`+=`). → rezolvat.
+- **B3** `Echipa.transferEchipa()` scotea jucătorul dintr-o copie defensivă → vechea echipă îl păstra. → rezolvat.
+- **B4** `nrComanda`/`numarLinie` câmp de instanță cu `++` → mereu 2; trebuie `static`. → parțial (M1 runda 2).
+
+## 🟡 Importante
+- **M1** `total()` copia lista la fiecare iterație. → rezolvat (iterează `arrLinii` direct).
+- **M2** `level4_Comanda()` moartă/incompletă. → completată (adaugă linii + print).
+
+## 🟢 Cleanups
+- **C1** cod comentat în `Main.java` (imports + `creareCatalog`/`Nivel2`).
+- **C2** `System.out.println` în `Player.setEchipa()`.
+- **Notă:** `j5.setEchipa(...)` e demonstrația didactică marcată de Adrian, nu bug.
+
+## Ce a mers bine (constant pe ambele runde)
+- Copii defensive pe getterele de listă (atenție la regresia B1 runda 2 pe `getArrLinii`).
+- Sincronizare bidirecțională corectă în `Curs.inscrieStudent`/`removeStudent`.
+- `adaugaCurs`/`removeCurs` package-private — încapsularea relației prinsă corect.
