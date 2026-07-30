@@ -8,12 +8,16 @@ import app.relations.manyToMany.Curs;
 import app.relations.manyToMany.Student;
 import app.simple.Banca.ContBancar;
 
-import app.simple.catalog.Catalog;
-import app.simple.comenzi.Comanda;
-import app.simple.comenzi.Produs;
+//import app.simple.catalog.Catalog;
+//import app.simple.comenzi.Comanda;
+//import app.simple.comenzi.Produs;
 import app.simple.masini.Masina;
 import app.simple.masini.MasinaEnc;
 import app.relations.Persoana;
+
+import app.relations.compozitieVSagregare.Comanda;
+import app.relations.compozitieVSagregare.LinieComanda;
+import app.relations.compozitieVSagregare.Produs;
 
 public class Main {
     public static void main(String[] args) {
@@ -131,28 +135,28 @@ public class Main {
     }
 
 
-    public static void creareCatalog(){
+//    public static void creareCatalog(){
+//
+//        Catalog x = new Catalog();
+//
+//        x.adauga("banane");
+//    }
 
-        Catalog x = new Catalog();
-
-        x.adauga("banane");
-    }
-
-    public static void Nivel2(){
-
-        Produs p1 = new Produs("laptop", 900);
-        Produs p2 = new Produs("tableta", 450);
-        Produs p3 = new Produs("cafea", 50);
-
-        Comanda c1 = new Comanda("Adrian");
-        c1.adaugaLinie(p1, 1);
-        c1.adaugaLinie(p3, 10);
-
-        c1.descriere();
-
-//        c1.total();
-
-    }
+//    public static void Nivel2(){
+//
+//        Produs p1 = new Produs("laptop", 900);
+//        Produs p2 = new Produs("tableta", 450);
+//        Produs p3 = new Produs("cafea", 50);
+//
+//        Comanda c1 = new Comanda("Adrian");
+//        c1.adaugaLinie(p1, 1);
+//        c1.adaugaLinie(p3, 10);
+//
+//        c1.descriere();
+//
+////        c1.total();
+//
+//    }
 
 
     public static void exRelationare(){
@@ -248,5 +252,14 @@ public class Main {
 
 //        s1.getCursuri();
 
+    }
+
+    public static void level4_Comanda(){
+
+        Produs p1 = new Produs("Cafea", 100);
+        Produs p2 = new Produs("Tiramisu", 250);
+        Produs p3 = new Produs("Apa", 20);
+
+        Comanda c1 = new Comanda();
     }
 }

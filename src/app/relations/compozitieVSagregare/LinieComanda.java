@@ -5,7 +5,7 @@ public class LinieComanda {
     private int numarLinie = 1;
     private int cantitate;
     private Produs produs;
-    private double total;
+    private double subtotal;
 
 
     public LinieComanda(Produs p, int cantitate){
@@ -22,10 +22,10 @@ public class LinieComanda {
         this.produs = p;
     }
 
-    public double subtotal(){
+    public double getSubtotal(){
 
-        total += produs.getPret() * cantitate;
-        return total;
+        subtotal += (double) produs.getPret() * cantitate;
+        return subtotal;
     }
 
 }
