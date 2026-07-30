@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Comanda {
-    private int nrComanda = 1;
+    private static int nrComanda = 1;   //ID contor auto-incremental STATIC
     private double total;
     private List<LinieComanda> arrLinii = new ArrayList<>();
 
@@ -19,24 +19,24 @@ public class Comanda {
 
         LinieComanda linie = new LinieComanda(p, cantitate);
         arrLinii.add(linie);
+
     }
 
     public List<LinieComanda> getArrLinii(){
-
-        List<LinieComanda> arrLiniiCopy = new ArrayList<>(arrLinii);
-        return arrLiniiCopy;
+        return arrLinii;
     }
 
-    public double total(){
+    public void total(){
 
-        for(int i=0; i<getArrLinii().size(); i++){
-            total += getArrLinii().get(i).getSubtotal();
+        total=0;
+
+
+        for(int i=0; i<arrLinii.size(); i++){
+            total += arrLinii.get(i).getSubtotal();
         }
-
-        return total;
     }
 
     public String getTotal(){
-        return "Pretul total al comenzii este: " + this.total;
+        return "Pretul total al comenzii este: LEI " + this.total;
     }
 }

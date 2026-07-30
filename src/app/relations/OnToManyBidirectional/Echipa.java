@@ -8,7 +8,7 @@ public class Echipa {
     private String name;
     private List<Player> jucatori = new ArrayList<> ();
 
-    public List<Player> getJucatori(){
+    public List<Player> getJucatori(){      //returns a shallow copy of List<Player> jucatori
         return new ArrayList<>(jucatori);
     }
 
@@ -45,7 +45,11 @@ public class Echipa {
             Echipa oldTeam = jucator.getEchipa();
 
             if (oldTeam != null){   //daca are o echipa, scoate-l din ea.
-                oldTeam.getJucatori().remove(jucator);
+
+//              X  oldTeam.getJucatori().remove(jucator); -- .getJucatori() intoarce o copie shallow
+//              -> deci jucatorul e sters doar din reference List, nu din cel original
+
+                oldTeam.jucatori.remove(jucator);
             }
 
             this.jucatori.add(jucator);

@@ -38,8 +38,10 @@ public class Main {
 
 //        exRelationare();
 //        oneToMany_Echipa();
-        manyToMany_Student_Curs();
+//        manyToMany_Student_Curs();
+        level4_Comanda();
     }
+
 
 
 
@@ -261,5 +263,16 @@ public class Main {
         Produs p3 = new Produs("Apa", 20);
 
         Comanda c1 = new Comanda();
+
+        c1.adaugaLinie(p2, 10);
+        c1.adaugaLinie(p3, 4);
+
+        System.out.println(c1.getTotal());
+        c1.total();
+//        System.out.println(c1.total());
+//        System.out.println(c1.total());
+        System.out.println(c1.getTotal());
+        c1.total();
+        System.out.println(c1.getTotal());
     }
 }
