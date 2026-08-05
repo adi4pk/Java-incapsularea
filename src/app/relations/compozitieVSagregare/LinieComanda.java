@@ -1,8 +1,8 @@
 package app.relations.compozitieVSagregare;
 
 public class LinieComanda {
-
-    private static int numarLinie = 1;      //ID contor auto-incremental STATIC
+    private static int numarLinie;
+    private int id;    //ID contor auto-incremental STATIC
     private int cantitate;
     private Produs produs;
     private double subtotal;
@@ -12,15 +12,17 @@ public class LinieComanda {
         numarLinie++;
         setProdus(p);
         setCantitate(cantitate);
-
+        this.id=numarLinie;
         setSubtotal();
     }
 
     public void setCantitate(int cantitate){
         this.cantitate = cantitate;
+        setSubtotal();
+
     }
 
-    public void setProdus(Produs p){
+    void setProdus(Produs p){
         this.produs = p;
     }
 

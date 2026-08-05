@@ -5,6 +5,7 @@ import java.util.List;
 
 public class Comanda {
     private static int nrComanda = 1;   //ID contor auto-incremental STATIC
+    private int idComanda;
     private double total;
     private List<LinieComanda> arrLinii = new ArrayList<>();
 
@@ -13,6 +14,7 @@ public class Comanda {
     public Comanda(){
 
         nrComanda++;
+        this.idComanda = nrComanda;
     }
 
     public void adaugaLinie(Produs p, int cantitate){
@@ -37,6 +39,7 @@ public class Comanda {
     }
 
     public String getTotal(){
+        total();
         return "Pretul total al comenzii este: LEI " + this.total;
     }
 }

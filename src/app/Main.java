@@ -4,6 +4,9 @@ package app;
 import app.relations.Buletin;
 import app.relations.OnToManyBidirectional.Echipa;
 import app.relations.OnToManyBidirectional.Player;
+import app.relations.Provocari.Autor;
+import app.relations.Provocari.Carte;
+import app.relations.Provocari.Editura;
 import app.relations.manyToMany.Curs;
 import app.relations.manyToMany.Student;
 import app.simple.Banca.ContBancar;
@@ -275,4 +278,31 @@ public class Main {
         c1.total();
         System.out.println(c1.getTotal());
     }
+
+    public static void level4_Autor_provocare(){
+
+
+                // Autori
+                Autor Eminescu = new Autor("Mihai Eminescu");
+                Autor Doe = new Autor("John Doe");
+                Autor Martin = new Autor("George R. R. Martin");
+
+                // Edituri
+                Editura humanitas = new Editura("Humanitas");
+                Editura abc = new Editura("Polirom");
+
+                // Carti
+                Carte c1 = new Carte("Luceafarul", Eminescu, humanitas);
+                Carte c2 = new Carte("Poezii", Eminescu, humanitas);
+                Carte c3 = new Carte("Basme", Eminescu, abc);
+                Carte c4 = new Carte("A song of Ice and Fire", Martin, abc);
+
+                Carte c5 = new Carte("Humankind", Doe, humanitas);
+
+                // Afisare carti Eminescu la Humanitas
+        Eminescu.cartileAutoruluiLaEditura(humanitas);
+
+        Martin.cartileAutoruluiLaEditura(abc);
+    }
+
 }
