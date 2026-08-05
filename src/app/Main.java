@@ -7,6 +7,7 @@ import app.relations.OnToManyBidirectional.Player;
 import app.relations.Provocari.Autor;
 import app.relations.Provocari.Carte;
 import app.relations.Provocari.Editura;
+import app.relations.Provocari.ReteaSociala.Utilizator;
 import app.relations.manyToMany.Curs;
 import app.relations.manyToMany.Student;
 import app.simple.Banca.ContBancar;
@@ -42,8 +43,11 @@ public class Main {
 //        exRelationare();
 //        oneToMany_Echipa();
 //        manyToMany_Student_Curs();
-        level4_Comanda();
+//        level4_Comanda();
+//        level4_Autor_provocare();
+        ReteaSociala();
     }
+
 
 
 
@@ -303,6 +307,18 @@ public class Main {
         Eminescu.cartileAutoruluiLaEditura(humanitas);
 
         Martin.cartileAutoruluiLaEditura(abc);
+    }
+
+    public static void ReteaSociala(){
+
+        Utilizator user1 = new Utilizator("Fane", 45, "faiantar", "Bucuresti");
+        Utilizator user2 = new Utilizator("Andrei", 30, "corporatist", "Cluj");
+
+        user1.imprietenire(user2);
+        System.out.println("Prietenii lui " + user1.getNume() + " sunt: " + user1.getPrieteni());
+        System.out.println("Prietenii lui " + user2.getNume() + " sunt: " + user2.getPrieteni());
+
+
     }
 
 }
